@@ -1,0 +1,22 @@
+/
+├── index.html
+├── manifest.json
+├── sw.js
+├── css/
+│   └── styles.css
+├── js/
+│   ├── app.js
+│   ├── emulator.js
+│   └── storage.js
+├── data/
+│   └── jogos.json
+├── assets/
+│   ├── capas/
+│   └── icons/
+└── roms/
+    ├── atari2600/
+    ├── nes/
+    ├── sms/
+    ├── snes/
+    ├── megadrive/
+    └── gb/

@@ -1,0 +1,25 @@
+# Sistema
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*~
+
+# Node (não usado, mas evita sujeira)
+node_modules/
+npm-debug.log*
+yarn-error.log*
+
+# Logs
+*.log
+
+# Temporários
+tmp/
+temp/
+*.tmp
+
+# NÃO ignorar roms/ — os homebrews são livres
+# NÃO ignorar assets/ — tudo é usado no site

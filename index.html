@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>GAMECA — Jogos novos para máquinas antigas</title>
+  <meta name="description" content="Descubra e jogue homebrew contemporâneo para Game Boy, NES, SNES, Mega Drive, Master System e Atari 2600." />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://gameca.com.br/" />
+  <meta property="og:title" content="GAMECA — Jogos novos para máquinas antigas" />
+  <meta property="og:description" content="Descubra e jogue homebrew contemporâneo para Game Boy, NES, SNES, Mega Drive, Master System e Atari 2600." />
+  <meta property="og:image" content="https://gameca.com.br/assets/og-image.jpg" />
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="GAMECA" />
+  <meta name="twitter:description" content="Jogos novos para máquinas antigas." />
+  <meta name="twitter:image" content="https://gameca.com.br/assets/og-image.jpg" />
+
+  <meta name="theme-color" content="#0F0D0B" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="GAMECA" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" type="image/png" href="assets/icons/icon-192.png" />
+  <link rel="apple-touch-icon" href="assets/icons/icon-192.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            ink:   { 900:'#080706', 800:'#0F0D0B', 700:'#1A1715', 600:'#252220', 500:'#3A3532', 400:'#4E4844' },
+            cream: { DEFAULT:'#F2EDE4', soft:'#D9D2C3', muted:'#8A8375', dim:'#5A554D' },
+            rust:  { DEFAULT:'#C13524', light:'#D9542F', dark:'#8A2015' },
+            play:  '#C13524'
+          },
+          fontFamily: {
+            display: ['Anton', 'Impact', 'sans-serif'],
+            sans:    ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+            mono:    ['"JetBrains Mono"', 'ui-monospace', 'monospace']
+          },
+          keyframes: {
+            'fade-in':   { '0%':{opacity:0}, '100%':{opacity:1} },
+            'slide-up':  { '0%':{opacity:0, transform:'translateY(24px)'}, '100%':{opacity:1, transform:'translateY(0)'} },
+            'zoom-in':   { '0%':{opacity:0, transform:'scale(.96)'}, '100%':{opacity:1, transform:'scale(1)'} },
+            'spin-slow': { to:{transform:'rotate(360deg)'} }
+          },
+          animation: {
+            'fade-in':   'fade-in .35s ease-out both',
+            'slide-up':  'slide-up .5s cubic-bezier(.22,1,.36,1) both',
+            'zoom-in':   'zoom-in .3s cubic-bezier(.22,1,.36,1) both',
+            'spin-slow': 'spin-slow 1.1s linear infinite'
+          }
+        }
+      }
+    };
+  </script>
+
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+
+<body class="bg-ink-800 text-cream font-sans antialiased overflow-x-hidden">
+
+  <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:z-[100] focus:top-3 focus:left-3 focus:bg-rust focus:text-cream focus:px-4 focus:py-2 focus:rounded">
+    Pular para o conteúdo
+  </a>
+
+  <!-- ============================================================
+       HEADER
+  ============================================================ -->
+  <header id="app-header" class="fixed top-0 inset-x-0 z-40 transition-all duration-300">
+    <div class="header-rule"></div>
+
+    <div class="flex items-center gap-3 md:gap-8 px-4 md:px-10 h-16 md:h-[72px]">
+
+      <a href="#" id="logo-link" class="shrink-0 flex items-center" aria-label="GAMECA — Início">
+        <img src="assets/logos/gameca-logo-01.svg"
+             alt="GAMECA"
+             class="h-7 md:h-9 w-auto"
+             onerror="this.style.display='none';this.nextElementSibling.style.display='block';" />
+        <span class="font-display text-cream text-xl md:text-2xl tracking-tight hidden">GAMECA</span>
+      </a>
+
+      <nav id="main-nav" class="hidden lg:flex items-center gap-1" aria-label="Navegação">
+        <button class="nav-link active" data-filter="todos">Play</button>
+        <button class="nav-link" data-filter="console">Discover</button>
+        <button class="nav-link" data-filter="Ação">Creators</button>
+        <button class="nav-link" data-filter="RPG">Hardware</button>
+        <button class="nav-link" data-filter="favoritos">Library</button>
+      </nav>
+
+      <select id="mobile-category"
+              class="lg:hidden bg-ink-700 border border-ink-500 rounded-sm px-2 py-1 text-xs font-mono uppercase tracking-wider text-cream"
+              aria-label="Navegação">
+        <option value="todos">Play</option>
+        <option value="console">Discover</option>
+        <option value="Ação">Creators</option>
+        <option value="RPG">Hardware</option>
+        <option value="favoritos">Library</option>
+      </select>
+
+      <div class="flex-1"></div>
+
+      <div id="search-wrapper"
+           class="flex items-center gap-2 bg-ink-700/60 border border-ink-500 rounded-sm
+                  px-3 py-2 transition-all duration-300 w-10 md:w-56
+                  focus-within:w-56 md:focus-within:w-72 focus-within:border-rust">
+        <svg class="w-4 h-4 shrink-0 text-cream-muted" fill="none" stroke="currentColor" stroke-width="2"
+             viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" stroke-linecap="round" />
+        </svg>
+        <input id="search-input" type="search" placeholder="Buscar jogos, criadores..."
+               autocomplete="off"
+               class="bg-transparent outline-none text-sm w-full placeholder:text-cream-dim" />
+        <button id="search-clear" class="hidden text-cream-muted hover:text-cream text-lg leading-none" aria-label="Limpar busca">&times;</button>
+      </div>
+
+      <span id="offline-badge"
+            class="hidden items-center gap-1.5 text-[10px] font-mono font-semibold text-rust
+                   border border-rust/50 rounded-full px-2 py-0.5 tracking-widest uppercase"
+            title="Você está offline">
+        <span class="w-1.5 h-1.5 rounded-full bg-rust"></span>
+        Offline
+      </span>
+    </div>
+  </header>
+
+  <!-- ============================================================
+       HERO
+  ============================================================ -->
+  <section id="hero" class="relative w-full h-[82vh] min-h-[560px] max-h-[820px] flex items-end overflow-hidden">
+
+    <img id="hero-backdrop"
+         src=""
+         alt=""
+         class="absolute inset-0 w-full h-full object-cover scale-105 transition-opacity duration-700 opacity-0"
+         style="image-rendering: pixelated;" />
+
+    <div class="absolute inset-0 bg-gradient-to-t from-ink-800 via-ink-800/50 to-transparent"></div>
+    <div class="absolute inset-0 bg-gradient-to-r from-ink-900/70 via-ink-900/25 to-transparent"></div>
+
+    <div class="absolute inset-0 pointer-events-none"
+         style="background: radial-gradient(ellipse 55% 75% at 0% 100%, rgba(8,7,6,.65) 0%, transparent 70%);"></div>
+
+    <div class="hero-grain" aria-hidden="true"></div>
+
+    <div class="relative z-30 w-full px-6 md:px-12 pb-14 md:pb-20 animate-slide-up">
+      <div class="max-w-2xl">
+
+        <div class="flex items-center gap-3 mb-5">
+          <span id="hero-badge"
+                class="font-mono text-[10px] md:text-[11px] font-bold tracking-[0.25em] uppercase
+                       bg-rust text-cream rounded-sm px-2.5 py-1">—</span>
+          <span class="hidden md:block h-px flex-1 max-w-[80px] bg-rust/50"></span>
+          <span class="hidden md:block font-mono text-[10px] tracking-[0.25em] text-rust uppercase font-semibold">Em destaque</span>
+        </div>
+
+        <h1 id="hero-title"
+            class="font-display text-cream text-5xl md:text-7xl lg:text-8xl leading-[0.9] mb-5 uppercase tracking-tight drop-shadow-[0_4px_20px_rgba(0,0,0,.95)]">—</h1>
+
+        <div id="hero-meta"
+             class="font-mono text-[11px] md:text-xs uppercase tracking-[0.2em] text-cream-soft mb-5 flex flex-wrap items-center gap-x-3 gap-y-1 drop-shadow-[0_2px_8px_rgba(0,0,0,.95)]">—</div>
+
+        <p id="hero-resumo"
+           class="text-sm md:text-lg leading-relaxed text-cream-soft mb-8 line-clamp-3 max-w-xl drop-shadow-[0_2px_8px_rgba(0,0,0,.95)]">—</p>
+
+        <div class="flex flex-wrap gap-3">
+          <button id="hero-play"
+                  class="inline-flex items-center gap-2.5 bg-rust text-cream font-bold text-sm md:text-base uppercase tracking-wider
+                         px-7 py-3.5 rounded-sm hover:bg-rust-light transition active:scale-[0.98] shadow-[0_10px_30px_rgba(0,0,0,.5)]">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+            Jogar agora
+          </button>
+
+          <button id="hero-info"
+                  class="inline-flex items-center gap-2 border border-cream/30 text-cream
+                         font-bold text-sm md:text-base uppercase tracking-wider px-7 py-3.5 rounded-sm
+                         hover:bg-cream/10 hover:border-cream/60 transition active:scale-[0.98] backdrop-blur-sm">
+            Meet the game
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <div id="hero-dots" class="absolute bottom-8 right-6 md:right-12 z-30 flex gap-1.5"></div>
+
+    <div class="absolute bottom-0 inset-x-0 h-20 bg-gradient-to-t from-ink-800 to-transparent pointer-events-none z-20"></div>
+
+  </section>
+
+  <!-- ============================================================
+       MAIN
+  ============================================================ -->
+  <main id="main-content" class="relative z-0 pt-4 md:pt-6 pb-28 space-y-10 md:space-y-14">
+
+    <section id="row-continue" class="hidden">
+      <h2 class="row-title">Continuar jogando</h2>
+      <div class="row-track" data-row="continue"></div>
+    </section>
+
+    <section id="row-search" class="hidden">
+      <h2 class="row-title">Resultados para <span id="search-term" class="text-rust"></span></h2>
+      <div class="row-track" data-row="search"></div>
+    </section>
+
+    <div id="rows-container" class="space-y-10 md:space-y-14"></div>
+
+    <div id="empty-state" class="hidden text-center py-24 px-6">
+      <p class="font-display text-6xl text-ink-500 mb-4">∅</p>
+      <h3 class="font-display text-3xl text-cream mb-2 uppercase tracking-tight">Nada por aqui</h3>
+      <p class="text-cream-muted text-sm">Tente outra busca ou explore outra categoria.</p>
+    </div>
+
+    <div id="loading-rows" class="space-y-12 px-4 md:px-10">
+      <div class="space-y-3">
+        <div class="h-7 w-64 bg-ink-600 rounded-sm animate-pulse"></div>
+        <div class="flex gap-3 overflow-hidden">
+          <div class="h-44 w-32 md:h-56 md:w-40 bg-ink-700 rounded-sm animate-pulse shrink-0"></div>
+          <div class="h-44 w-32 md:h-56 md:w-40 bg-ink-700 rounded-sm animate-pulse shrink-0"></div>
+          <div class="h-44 w-32 md:h-56 md:w-40 bg-ink-700 rounded-sm animate-pulse shrink-0"></div>
+          <div class="h-44 w-32 md:h-56 md:w-40 bg-ink-700 rounded-sm animate-pulse shrink-0"></div>
+          <div class="h-44 w-32 md:h-56 md:w-40 bg-ink-700 rounded-sm animate-pulse shrink-0"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ============================================================
+       FOOTER
+  ============================================================ -->
+  <footer class="border-t border-ink-600 bg-ink-900 px-4 md:px-10 py-14">
+    <div class="max-w-5xl mx-auto">
+      <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-8">
+        <img src="assets/logos/gameca-logo-03.svg"
+             alt="GAMECA"
+             class="h-24 md:h-28 w-auto"
+             onerror="this.style.display='none';" />
+        <p class="font-mono text-[10px] tracking-[0.25em] uppercase text-rust md:text-right">
+          Jogos novos<br class="md:hidden" /> para máquinas antigas
+        </p>
+      </div>
+      <div class="border-t border-ink-600 pt-6 grid md:grid-cols-2 gap-4">
+        <p class="text-xs text-cream-muted leading-relaxed">
+          Homebrew contemporâneo para hardware clássico, rodando no navegador via
+          <span class="text-cream-soft">EmulatorJS</span>. Todos os jogos são distribuídos
+          com autorização dos criadores ou sob licença livre.
+        </p>
+        <p class="font-mono text-[10px] tracking-[0.2em] uppercase text-cream-dim md:text-right">
+          © <span id="year"></span> GAMECA
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ============================================================
+       MODAL DE DETALHES
+  ============================================================ -->
+  <div id="detail-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-0 md:p-6"
+       role="dialog" aria-modal="true" aria-labelledby="detail-title">
+    <div id="detail-backdrop" class="absolute inset-0 bg-black/85 backdrop-blur-sm"></div>
+
+    <div id="detail-box"
+         class="relative w-full max-w-3xl max-h-full md:max-h-[88vh] overflow-y-auto
+                bg-ink-800 rounded-none md:rounded-sm shadow-2xl animate-zoom-in
+                border border-ink-600 scrollbar-thin">
+
+      <button id="detail-close"
+              class="absolute top-4 right-4 z-20 w-9 h-9 rounded-sm bg-ink-900/80 hover:bg-ink-900
+                     border border-ink-600 flex items-center justify-center text-xl leading-none transition text-cream"
+              aria-label="Fechar detalhes">&times;</button>
+
+      <div class="relative h-56 md:h-80 w-full overflow-hidden bg-ink-700">
+        <img id="detail-backdrop-img" src="" alt="" class="w-full h-full object-cover opacity-70" />
+        <div class="absolute inset-0 bg-gradient-to-t from-ink-800 via-ink-800/40 to-transparent"></div>
+        <div class="hero-grain"></div>
+      </div>
+
+      <div class="relative -mt-20 md:-mt-24 px-5 md:px-10 pb-10">
+        <div class="flex items-center gap-3 mb-4">
+          <span id="detail-badge"
+                class="font-mono text-[10px] font-bold tracking-[0.25em] uppercase bg-rust text-cream rounded-sm px-2 py-1">—</span>
+        </div>
+
+        <h2 id="detail-title"
+            class="font-display text-cream text-4xl md:text-5xl leading-[0.92] uppercase tracking-tight mb-5">—</h2>
+
+        <div id="detail-meta" class="font-mono text-[11px] uppercase tracking-[0.2em] text-cream-soft mb-6 flex flex-wrap items-center gap-x-3 gap-y-1">—</div>
+
+        <div class="flex flex-wrap items-center gap-3 mb-7">
+          <button id="detail-play"
+                  class="inline-flex items-center gap-2 bg-rust text-cream font-bold uppercase tracking-wider px-7 py-3.5 rounded-sm
+                         hover:bg-rust-light transition active:scale-[0.98]">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+            Jogar
+          </button>
+
+          <button id="detail-fav"
+                  class="w-12 h-12 rounded-sm border border-cream/25 hover:border-rust
+                         flex items-center justify-center transition text-cream" aria-label="Adicionar à biblioteca" aria-pressed="false">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 5v14M5 12h14" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
+
+        <p id="detail-resumo" class="text-sm md:text-base leading-relaxed text-cream-soft mb-8">—</p>
+
+        <dl id="detail-ficha" class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-3 text-sm border-t border-ink-600 pt-6"></dl>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       EMULADOR
+  ============================================================ -->
+  <div id="emulator-overlay" class="fixed inset-0 z-[60] hidden bg-black flex-col" role="dialog" aria-modal="true" aria-label="Emulador">
+    <div id="emulator-bar"
+         class="absolute top-0 inset-x-0 z-30 flex items-center gap-3 px-3 md:px-5 h-12
+                bg-gradient-to-b from-black/95 to-transparent transition-opacity duration-300">
+      <button id="emulator-close"
+              class="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-widest font-semibold px-3 py-1.5 rounded-sm
+                     border border-cream/20 hover:bg-rust hover:border-rust transition text-cream"
+              aria-label="Fechar emulador">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="m15 6-6 6 6 6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Sair
+      </button>
+
+      <span id="emulator-title" class="text-sm md:text-base font-semibold truncate text-cream">—</span>
+
+      <span id="emulator-console"
+            class="hidden sm:inline-block font-mono text-[10px] font-bold tracking-[0.25em] uppercase
+                   bg-rust text-cream rounded-sm px-2 py-0.5">—</span>
+
+      <div class="flex-1"></div>
+
+      <span id="emulator-save-status" class="font-mono text-[11px] text-rust opacity-0 transition-opacity tracking-widest uppercase">
+        ● Save
+      </span>
+
+      <button id="emulator-fullscreen" class="w-8 h-8 rounded flex items-center justify-center hover:bg-cream/15 transition text-cream" aria-label="Tela cheia">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+
+      <button id="emulator-restart" class="w-8 h-8 rounded flex items-center justify-center hover:bg-cream/15 transition text-cream" aria-label="Reiniciar jogo">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M3 12a9 9 0 1 0 3-6.7M3 4v5h5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+
+    <div id="emulator-stage" class="relative flex-1 w-full h-full flex items-center justify-center">
+      <div id="game" class="w-full h-full"></div>
+
+      <div id="emulator-loading"
+           class="absolute inset-0 z-20 flex flex-col items-center justify-center gap-5 bg-ink-900">
+        <div class="w-12 h-12 rounded-full border-4 border-ink-600 border-t-rust animate-spin-slow"></div>
+        <p id="emulator-loading-text" class="font-mono text-xs uppercase tracking-[0.3em] text-cream-muted">Carregando emulador</p>
+        <div class="w-56 h-1 bg-ink-700 rounded-full overflow-hidden">
+          <div id="emulator-progress" class="h-full w-0 bg-rust transition-all duration-300"></div>
+        </div>
+        <button id="emulator-cancel" class="font-mono text-[10px] uppercase tracking-[0.25em] text-cream-dim hover:text-cream underline underline-offset-4">Cancelar</button>
+      </div>
+
+      <div id="emulator-error"
+           class="hidden absolute inset-0 z-30 flex-col items-center justify-center gap-4 bg-ink-900 px-6 text-center">
+        <p class="font-display text-5xl text-ink-500">!</p>
+        <h3 class="font-display text-2xl text-cream uppercase tracking-tight">Não foi possível iniciar</h3>
+        <p id="emulator-error-msg" class="text-sm text-cream-muted max-w-md"></p>
+        <button id="emulator-error-close"
+                class="mt-2 bg-cream text-ink-900 font-bold uppercase tracking-wider px-6 py-3 rounded-sm hover:bg-cream-soft transition">
+          Voltar ao catálogo
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast-container" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[80] flex flex-col gap-2 items-center pointer-events-none"></div>
+
+  <!-- ============================================================
+       TEMPLATES
+  ============================================================ -->
+  <template id="tpl-card">
+    <button class="card group relative shrink-0 w-32 md:w-40 lg:w-44 rounded-sm overflow-hidden
+                   bg-ink-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-rust
+                   transition-transform duration-200 hover:scale-[1.04] hover:z-20 snap-start"
+            data-action="open">
+      <img class="card-cover w-full aspect-[3/4] object-cover bg-ink-600" loading="lazy" decoding="async" alt="" />
+      <div class="card-overlay absolute inset-0 bg-gradient-to-t from-ink-900 via-ink-900/40 to-transparent
+                  opacity-0 group-hover:opacity-100 transition-opacity duration-200
+                  flex flex-col justify-end p-3 text-left pointer-events-none">
+        <span class="card-console font-mono text-[9px] font-bold uppercase tracking-[0.2em] text-rust mb-1"></span>
+        <span class="card-title text-xs font-semibold leading-tight line-clamp-2 text-cream"></span>
+        <span class="card-play mt-2 inline-flex items-center gap-1 font-mono text-[9px] font-bold tracking-[0.2em] text-cream uppercase">
+          ▶ Jogar
+        </span>
+      </div>
+      <span class="card-fav absolute top-2 right-2 text-xs opacity-0 group-hover:opacity-100 transition">★</span>
+    </button>
+  </template>
+
+  <template id="tpl-row">
+    <section class="row group/row">
+      <div class="flex items-end justify-between px-4 md:px-10 mb-3 gap-3">
+        <h2 class="row-title"></h2>
+        <div class="hidden md:flex gap-1 opacity-0 group-hover/row:opacity-100 transition shrink-0">
+          <button class="row-prev w-8 h-8 rounded-sm border border-ink-500 hover:border-cream hover:bg-ink-700 flex items-center justify-center text-cream transition" aria-label="Anterior">‹</button>
+          <button class="row-next w-8 h-8 rounded-sm border border-ink-500 hover:border-cream hover:bg-ink-700 flex items-center justify-center text-cream transition" aria-label="Próximo">›</button>
+        </div>
+      </div>
+      <div class="row-track"></div>
+    </section>
+  </template>
+
+  <template id="tpl-ficha">
+    <div class="flex gap-3 font-mono text-[11px] uppercase tracking-wider">
+      <dt class="text-cream-dim min-w-[110px]"></dt>
+      <dd class="text-cream-soft normal-case tracking-normal"></dd>
+    </div>
+  </template>
+
+  <script src="data/jogos.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/emulator.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+    if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js').catch(err =>
+          console.warn('[PWA] Falha ao registrar SW:', err)
+        );
+      });
+    }
+  </script>
+</body>
+</html>
