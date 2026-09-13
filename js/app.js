@@ -293,7 +293,8 @@ function buildHomeRows() {
   );
   container.appendChild(buildRow('Descubra novos clássicos', shuffled, 'descubra'));
 
-  posicionarAdSlotMid(1);
+  // Slot do meio → depois da 3ª fileira (índice 2)
+  posicionarAdSlotMid(2);
 }
 
 function renderContinueRow() {
@@ -409,7 +410,7 @@ function applyFilter(filter) {
     [...byPlataforma.entries()].forEach(([k, list]) => {
       dom.rowsContainer.appendChild(buildRow(k, list, `plataforma-${slugify(k)}`));
     });
-    posicionarAdSlotMid(1);
+    posicionarAdSlotMid(2);
     return;
   }
 
