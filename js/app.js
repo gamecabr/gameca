@@ -31,15 +31,12 @@ function detectLang() {
   try {
     const saved = localStorage.getItem('gameca:lang');
     if (saved && window.I18N?.[saved]) return saved;
-
     const nav = (navigator.language || 'pt').toLowerCase();
     if (nav.startsWith('pt')) return 'pt';
     if (nav.startsWith('hi')) return 'hi';
     if (nav.startsWith('en')) return 'en';
     return 'pt';
-  } catch {
-    return 'pt';
-  }
+  } catch { return 'pt'; }
 }
 
 function t(key, vars) {
@@ -53,6 +50,34 @@ function t(key, vars) {
   return str;
 }
 
+function tGenre(g) {
+  if (!g) return '';
+  const slug = String(g).toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '');
+  const key = 'genre.' + slug;
+  const trans = t(key);
+  return trans === key ? g : trans;
+}
+
+function tTag(tg) {
+  if (!tg) return '';
+  const slug = String(tg).toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9-]+/g, '-');
+  const key = 'tag.' + slug;
+  const trans = t(key);
+  return trans === key ? tg : trans;
+}
+
+function tField(game, field) {
+  if (!game) return '';
+  if (state.lang === 'pt') return game[field] || '';
+  const i18n = game[field + '_i18n'];
+  if (i18n && i18n[state.lang]) return i18n[state.lang];
+  return game[field] || '';
+}
+
 function applyI18n() {
   const dict = window.I18N?.[state.lang] || window.I18N?.pt || {};
 
@@ -60,7 +85,6 @@ function applyI18n() {
     const key = el.dataset.i18n;
     const val = dict[key];
     if (val === undefined) return;
-
     if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
       el.placeholder = val;
     } else {
@@ -282,10 +306,10 @@ function renderHero() {
   if (game.ano) metaParts.push(game.ano);
   if (getCriadorNome(game)) metaParts.push(getCriadorNome(game));
   if (game.jogadores) metaParts.push(playersLabel(game.jogadores));
-  if (game.genero?.length) metaParts.push(game.genero.join(' • '));
+  if (game.genero?.length) metaParts.push(game.genero.map(tGenre).join(' • '));
   dom.heroMeta.textContent = metaParts.join('  ·  ');
 
-  dom.heroResumo.textContent = game.resumo || game.sinopse || '';
+  dom.heroResumo.textContent = tField(game, 'resumo') || tField(game, 'sinopse') || '';
 
   dom.heroDots.innerHTML = '';
   state.heroPool.forEach((_, i) => {
@@ -322,15 +346,10 @@ function posicionarAdSlotMid(posicao) {
   if (!slot || !container) return;
 
   const rows = Array.from(container.querySelectorAll(':scope > .row'));
-
-  if (rows.length < 2) {
-    slot.hidden = true;
-    return;
-  }
+  if (rows.length < 2) { slot.hidden = true; return; }
 
   const idx = Math.min(posicao, rows.length - 1);
   const referencia = rows[idx];
-
   referencia.insertAdjacentElement('afterend', slot);
   slot.hidden = false;
 }
@@ -339,10 +358,7 @@ function buildHomeRows() {
   const container = dom.rowsContainer;
   const slot = dom.adSlotMid;
 
-  if (slot && slot.parentElement !== container) {
-    container.appendChild(slot);
-  }
-
+  if (slot && slot.parentElement !== container) container.appendChild(slot);
   container.querySelectorAll(':scope > .row').forEach(r => r.remove());
 
   const byPlataforma = new Map();
@@ -360,9 +376,7 @@ function buildHomeRows() {
 
   keys.forEach(k => {
     const list = byPlataforma.get(k);
-    if (list.length) {
-      container.appendChild(buildRow(t('row.platform', { name: k }), list, `plataforma-${slugify(k)}`));
-    }
+    if (list.length) container.appendChild(buildRow(t('row.platform', { name: k }), list, `plataforma-${slugify(k)}`));
   });
 
   const byGenre = new Map();
@@ -376,12 +390,10 @@ function buildHomeRows() {
   [...byGenre.entries()]
     .filter(([, list]) => list.length >= 2)
     .forEach(([gen, list]) => {
-      container.appendChild(buildRow(t('row.genre', { name: gen }), list, `genero-${slugify(gen)}`));
+      container.appendChild(buildRow(t('row.genre', { name: tGenre(gen) }), list, `genero-${slugify(gen)}`));
     });
 
-  const shuffled = [...state.games].sort((a, b) =>
-    slugify(a.id).localeCompare(slugify(b.id))
-  );
+  const shuffled = [...state.games].sort((a, b) => slugify(a.id).localeCompare(slugify(b.id)));
   container.appendChild(buildRow(t('row.discover'), shuffled, 'descubra'));
 
   posicionarAdSlotMid(2);
@@ -389,7 +401,6 @@ function buildHomeRows() {
 
 function renderContinueRow() {
   const items = recents.top(12).map(r => state.byId.get(r.id)).filter(Boolean);
-
   if (!items.length) { dom.rowContinue.classList.add('hidden'); return; }
 
   dom.rowContinue.classList.remove('hidden');
@@ -427,7 +438,6 @@ function normalize(s) {
 function doSearch(term) {
   const q = normalize(term.trim());
   state.searchTerm = term;
-
   if (dom.searchClear) dom.searchClear.classList.toggle('hidden', !term);
 
   if (!q) {
@@ -462,15 +472,10 @@ function applyFilter(filter) {
   state.currentFilter = filter;
   prefs.set('lastFilter', filter);
 
-  dom.navLinks.forEach(btn =>
-    btn.classList.toggle('active', btn.dataset.filter === filter)
-  );
+  dom.navLinks.forEach(btn => btn.classList.toggle('active', btn.dataset.filter === filter));
   if (dom.mobileCat) dom.mobileCat.value = filter;
 
-  if (dom.searchInput.value) {
-    dom.searchInput.value = '';
-    doSearch('');
-  }
+  if (dom.searchInput.value) { dom.searchInput.value = ''; doSearch(''); }
 
   if (filter === 'todos') {
     dom.rowsContainer.classList.remove('hidden');
@@ -511,7 +516,7 @@ function applyFilter(filter) {
   if (!list.length) { dom.emptyState.classList.remove('hidden'); return; }
   dom.emptyState.classList.add('hidden');
   dom.rowsContainer.classList.remove('hidden');
-  dom.rowsContainer.appendChild(buildRow(filter, list, `genero-${slugify(filter)}`));
+  dom.rowsContainer.appendChild(buildRow(tGenre(filter), list, `genero-${slugify(filter)}`));
 }
 
 /* ============================================================
@@ -525,9 +530,7 @@ function openDetail(gameId) {
 
   dom.detailBackdropImg.src = game.hero || game.capa || '';
   dom.detailBackdropImg.alt = game.titulo || '';
-  dom.detailBackdropImg.onerror = () => {
-    dom.detailBackdropImg.style.opacity = '0.25';
-  };
+  dom.detailBackdropImg.onerror = () => { dom.detailBackdropImg.style.opacity = '0.25'; };
 
   dom.detailTitle.textContent = game.titulo || '';
   dom.detailBadge.textContent = getPlataformaNome(game);
@@ -535,19 +538,19 @@ function openDetail(gameId) {
   const metaParts = [];
   if (game.ano) metaParts.push(game.ano);
   if (game.jogadores) metaParts.push(playersLabel(game.jogadores));
-  if (game.genero?.length) metaParts.push(game.genero.join(' • '));
+  if (game.genero?.length) metaParts.push(game.genero.map(tGenre).join(' • '));
   dom.detailMeta.textContent = metaParts.join('  ·  ');
 
-  dom.detailResumo.textContent = game.sinopse || game.resumo || t('detail.no_description');
+  dom.detailResumo.textContent = tField(game, 'sinopse') || tField(game, 'resumo') || t('detail.no_description');
 
   dom.detailFicha.innerHTML = '';
   const fichaData = [
     [t('detail.console'),   getPlataformaNome(game)],
     [t('detail.developer'), getCriadorNome(game)],
     [t('detail.year'),      game.ano],
-    [t('detail.genre'),     (game.genero || []).join(', ')],
+    [t('detail.genre'),     (game.genero || []).map(tGenre).join(', ')],
     [t('detail.players'),   game.jogadores],
-    [t('detail.tags'),      (game.tags || []).join(', ')]
+    [t('detail.tags'),      (game.tags || []).map(tTag).join(', ')]
   ].filter(([, v]) => v);
 
   fichaData.forEach(([k, v]) => {
@@ -559,10 +562,7 @@ function openDetail(gameId) {
 
   updateFavButton(game.id);
 
-  dom.detailPlay.onclick = () => {
-    closeDetail();
-    startGame(game.id);
-  };
+  dom.detailPlay.onclick = () => { closeDetail(); startGame(game.id); };
 
   dom.detailModal.classList.remove('hidden');
   dom.detailModal.classList.add('flex');
@@ -593,9 +593,8 @@ function updateFavButton(gameId) {
 async function startGame(gameId) {
   const game = state.byId.get(gameId);
   if (!game) return;
-  try {
-    await play(game);
-  } catch (e) {
+  try { await play(game); }
+  catch (e) {
     console.error('[app] falha ao iniciar jogo:', e);
     toast(t('toast.play_error'));
   }
@@ -635,12 +634,8 @@ function bindEvents() {
     dom.searchInput.focus();
   });
 
-  dom.navLinks.forEach(btn =>
-    btn.addEventListener('click', () => applyFilter(btn.dataset.filter))
-  );
-
+  dom.navLinks.forEach(btn => btn.addEventListener('click', () => applyFilter(btn.dataset.filter)));
   dom.mobileCat?.addEventListener('change', e => applyFilter(e.target.value));
-
   dom.langSwitcher?.addEventListener('change', e => setLang(e.target.value));
 
   document.getElementById('logo-link')?.addEventListener('click', (e) => {
@@ -692,7 +687,6 @@ function loadGames() {
 
 function init() {
   cacheDom();
-
   state.lang = detectLang();
 
   let games;
@@ -712,7 +706,6 @@ function init() {
   }
 
   if (dom.loadingRows) dom.loadingRows.classList.add('hidden');
-
   if (dom.langSwitcher) dom.langSwitcher.value = state.lang;
 
   applyI18n();
@@ -723,13 +716,13 @@ function init() {
   buildHomeRows();
   renderContinueRow();
 
-  if (state.currentFilter && state.currentFilter !== 'todos') {
-    applyFilter(state.currentFilter);
-  }
+  if (state.currentFilter && state.currentFilter !== 'todos') applyFilter(state.currentFilter);
 
   bindEvents();
   handleScroll();
   handleConnectivity();
+
+  console.info('[app] rodando com app.js atualizado. tGenre:', typeof tGenre);
 }
 
 if (document.readyState === 'loading') {
