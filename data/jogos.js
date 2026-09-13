@@ -1,155 +1,299 @@
 window.JOGOS = [
   {
     "id": "ucity-gb",
+    "slug": "ucity",
     "titulo": "µCity",
-    "console": "Game Boy",
-    "core": "gb",
-    "genero": ["Estratégia", "Simulação"],
+    "plataforma": {
+      "slug": "game-boy-color",
+      "nome": "Game Boy Color",
+      "fabricante": "Nintendo",
+      "ano_lancamento": 1998
+    },
+    "criador": {
+      "slug": "antoniond",
+      "nome": "AntonioND",
+      "bio": "Desenvolvedor espanhol independente, autor de µCity e outras ferramentas open-source para Game Boy.",
+      "site": "https://www.skylyrac.net"
+    },
+    "core": "gbc",
     "ano": 2015,
-    "desenvolvedora": "AntonioND",
+    "genero": ["Estratégia", "Simulação"],
     "jogadores": 1,
-    "capa": "assets/capas/ucity-gb.jpg",
     "rom": "roms/gb/uCity.gb",
+    "capa": "assets/capas/ucity-gb.jpg",
+    "hero": "",
+    "screenshots": [],
     "resumo": "Construa e gerencie sua própria cidade em um simulador completo para Game Boy.",
     "sinopse": "µCity (Micro City) é um simulador de construção de cidades completo para o Game Boy — uma proeza técnica impressionante. Você projeta ruas, zonas residenciais, comerciais e industriais, gerencia impostos e serviços públicos, tudo dentro das limitações do hardware de 8 bits. Um SimCity de bolso feito com maestria pela comunidade.",
     "tags": ["simulação", "estratégia", "homebrew"],
     "link_oficial": "https://github.com/AntonioND/ucity",
-    "destaque": true
+    "distribution_status": "PLAY_HERE",
+    "external_link": "",
+    "is_published": true,
+    "is_featured": true
   },
   {
     "id": "cleaving-caliber-gold-gbc",
+    "slug": "cleaving-caliber-gold",
     "titulo": "Cleaving Caliber Gold",
-    "console": "Game Boy Color",
+    "plataforma": {
+      "slug": "game-boy-color",
+      "nome": "Game Boy Color",
+      "fabricante": "Nintendo",
+      "ano_lancamento": 1998
+    },
+    "criador": {
+      "slug": "cursed-bootleg-inc",
+      "nome": "CURSED BOOTLEG INC",
+      "bio": "Estúdio independente focado em jogos de Game Boy Color com estética arcade.",
+      "site": ""
+    },
     "core": "gbc",
-    "genero": ["Ação", "Arcade"],
     "ano": 2024,
-    "desenvolvedora": "CURSED BOOTLEG INC",
+    "genero": ["Ação", "Arcade"],
     "jogadores": 1,
-    "capa": "assets/capas/cleaving-caliber-gold-gbc.jpg",
     "rom": "roms/gb/Cleaving Caliber Gold.gbc",
+    "capa": "assets/capas/cleaving-caliber-gold-gbc.jpg",
+    "hero": "assets/hero/cleaving-caliber-gold-gbc.jpg",
+    "screenshots": [],
     "resumo": "Arkanoid encontra Time Crisis em um shooter de precisão para Game Boy Color.",
     "sinopse": "Cleaving Caliber é partes Arkanoid e partes Time Crisis. Quique a mira no seu veículo blindado para mirar em alvos para o seu franco-atirador. Mecânica única e visual retrô autêntico.",
     "tags": ["homebrew", "shooter", "puzzle"],
     "link_oficial": "https://hwilson.itch.io/ccgold",
-    "destaque": false
+    "distribution_status": "PLAY_HERE",
+    "external_link": "",
+    "is_published": true,
+    "is_featured": false
   },
   {
     "id": "deadeus-gb",
+    "slug": "deadeus",
     "titulo": "Deadeus",
-    "console": "Game Boy",
+    "plataforma": {
+      "slug": "game-boy",
+      "nome": "Game Boy",
+      "fabricante": "Nintendo",
+      "ano_lancamento": 1989
+    },
+    "criador": {
+      "slug": "spacebot-interactive",
+      "nome": "Spacebot Interactive",
+      "bio": "Estúdio independente especializado em jogos para Game Boy e Game Boy Color, autor de Deadeus e Dragonborne.",
+      "site": "https://www.spacebot-interactive.com"
+    },
     "core": "gb",
-    "genero": ["Aventura", "Horror"],
     "ano": 2019,
-    "desenvolvedora": "Spacebot Interactive",
+    "genero": ["Aventura", "Horror"],
     "jogadores": 1,
-    "capa": "assets/capas/deadeus-gb.jpg",
     "rom": "roms/gb/Deadeus.gb",
+    "capa": "assets/capas/deadeus-gb.jpg",
+    "hero": "assets/hero/deadeus-gb.jpg",
+    "screenshots": [],
     "resumo": "Aventura sombria em Game Boy onde uma criança tem três dias para evitar um destino terrível.",
     "sinopse": "Deadeus é uma aventura de horror para Game Boy onde você controla uma criança que sonha com sua própria morte. Você tem três dias para investigar, tomar decisões e mudar o destino — cada escolha leva a um dos 11 finais diferentes. Com trilha sonora inquietante e atmosfera densa, é uma das obras mais autorais do homebrew moderno para Game Boy.",
     "tags": ["aventura", "horror", "homebrew", "multi-finais"],
     "link_oficial": "https://spacebotinteractive.itch.io/deadeus",
-    "destaque": true
+    "distribution_status": "PLAY_HERE",
+    "external_link": "",
+    "is_published": true,
+    "is_featured": true
   },
   {
     "id": "borderline-snes",
+    "slug": "borderline",
     "titulo": "Borderline",
-    "console": "SNES",
+    "plataforma": {
+      "slug": "snes",
+      "nome": "SNES",
+      "fabricante": "Nintendo",
+      "ano_lancamento": 1990
+    },
+    "criador": {
+      "slug": "locked-door-puzzle",
+      "nome": "Locked Door Puzzle",
+      "bio": "Desenvolvedor independente de jogos homebrew, autor de Borderline para SNES.",
+      "site": ""
+    },
     "core": "snes",
-    "genero": ["Aventura", "Puzzle"],
     "ano": 2022,
-    "desenvolvedora": "Locked Door Puzzle",
+    "genero": ["Aventura", "Puzzle"],
     "jogadores": 1,
-    "capa": "assets/capas/borderline-snes.jpg",
     "rom": "roms/snes/borderline.smc",
+    "capa": "assets/capas/borderline-snes.jpg",
+    "hero": "",
+    "screenshots": [],
     "resumo": "Aventura SNES onde você alterna entre duas realidades a cada 30 segundos.",
     "sinopse": "Borderline é uma aventura para SNES onde você é arrastado entre duas realidades diferentes a cada 30 segundos. O mundo ao seu redor se reinicia a cada troca. Em cada um, você enfrenta perigo mortal e um mistério. Você precisa resolver o mistério de cada reino e encontrar o potencial escondido dentro de si mesmo para se libertar. Feito em C com PVSNESLib.",
     "tags": ["aventura", "puzzle", "homebrew", "jam"],
     "link_oficial": "https://lockeddoorpuzzle.itch.io/borderline",
-    "destaque": true
+    "distribution_status": "PLAY_HERE",
+    "external_link": "",
+    "is_published": true,
+    "is_featured": true
   },
-    {
+  {
     "id": "supplication-snes",
+    "slug": "supplication",
     "titulo": "Supplication",
-    "console": "SNES",
+    "plataforma": {
+      "slug": "snes",
+      "nome": "SNES",
+      "fabricante": "Nintendo",
+      "ano_lancamento": 1990
+    },
+    "criador": {
+      "slug": "wyrmwyrt",
+      "nome": "Wyrmwyrt",
+      "bio": "",
+      "site": ""
+    },
     "core": "snes",
-    "genero": ["Ação", "Aventura"],
     "ano": 2024,
-    "desenvolvedora": "Wyrmwyrt",
+    "genero": ["Ação", "Aventura"],
     "jogadores": 1,
-    "capa": "assets/capas/supplication-snes.jpg",
     "rom": "roms/snes/supplication.sfc",
+    "capa": "assets/capas/supplication-snes.jpg",
+    "hero": "",
+    "screenshots": [],
     "resumo": "Breve descrição do jogo em uma frase.",
     "sinopse": "Parágrafo maior sobre o jogo, o que ele é, o que torna interessante.",
     "tags": ["homebrew", "snes"],
-    "link_oficial": "https://link-do-itch.io",
-    "destaque": false
+    "link_oficial": "",
+    "distribution_status": "PLAY_HERE",
+    "external_link": "",
+    "is_published": true,
+    "is_featured": false
   },
-    {
+  {
     "id": "goomba-breakout-snes",
+    "slug": "goomba-breakout",
     "titulo": "Goomba BreakOut",
-    "console": "SNES",
+    "plataforma": {
+      "slug": "snes",
+      "nome": "SNES",
+      "fabricante": "Nintendo",
+      "ano_lancamento": 1990
+    },
+    "criador": {
+      "slug": "brig78cx",
+      "nome": "BriG78cx",
+      "bio": "Criador de jogos homebrew para SNES e 3DS. Mantém canal no YouTube sobre programação retrô.",
+      "site": "https://www.youtube.com/@RetroCGameProgramming"
+    },
     "core": "snes",
-    "genero": ["Arcade", "Ação"],
     "ano": 2024,
-    "desenvolvedora": "BriG78cx",
+    "genero": ["Arcade", "Ação"],
     "jogadores": 1,
-    "capa": "assets/capas/goomba-breakout-snes.jpg",
     "rom": "roms/snes/goomba-breakout.sfc",
+    "capa": "assets/capas/goomba-breakout-snes.jpg",
+    "hero": "",
+    "screenshots": [],
     "resumo": "Breakout com Goombas para SNES, com 20 níveis e power-ups.",
     "sinopse": "Goomba BreakOut é um jogo estilo 'bat and ball' para o Super Nintendo. O objetivo é limpar cada nível dos Goombas, rebatendo uma bola de fogo ou até quatro delas. Existem 3 power-ups diferentes: bola extra, raquete grande ou borda protetora. Até 4 bolas podem estar quicando ao mesmo tempo. A borda protetora se forma atrás da sua raquete, mas quebra a cada acerto. O jogo foi originalmente uma ideia que o desenvolvedor teve em sua série de vídeos sobre programação em C para SNES.",
     "tags": ["homebrew", "arcade", "breakout"],
     "link_oficial": "https://brig78cx.itch.io/goomba-breakout",
-    "destaque": false
+    "distribution_status": "PLAY_HERE",
+    "external_link": "",
+    "is_published": true,
+    "is_featured": false
   },
-    {
+  {
     "id": "cokey-cola-gb",
+    "slug": "cokey-cola",
     "titulo": "Cokey Cola",
-    "console": "Game Boy",
+    "plataforma": {
+      "slug": "game-boy",
+      "nome": "Game Boy",
+      "fabricante": "Nintendo",
+      "ano_lancamento": 1989
+    },
+    "criador": {
+      "slug": "barata-software",
+      "nome": "BARATA Software",
+      "bio": "Estúdio indie brasileiro de jogos, explora PICO-8 e Game Boy.",
+      "site": "https://baratasoftware.itch.io"
+    },
     "core": "gb",
-    "genero": ["Plataforma", "Ação"],
     "ano": 2024,
-    "desenvolvedora": "BARATA Software",
+    "genero": ["Plataforma", "Ação"],
     "jogadores": 1,
-    "capa": "assets/capas/cokey-cola-gb.jpg",
     "rom": "roms/gb/cokey-cola.gb",
+    "capa": "assets/capas/cokey-cola-gb.jpg",
+    "hero": "",
+    "screenshots": [],
     "resumo": "Plataforma kawaii para Game Boy: pule em criaturas adoráveis e colete latas de cola.",
     "sinopse": "Cokey Cola combina o charme dos gráficos vintage do Game Boy com criaturas adoráveis e ambientes vibrantes. Você precisa coletar latas de cola enquanto derrota criaturas simpáticas e usa um power-up de invisibilidade pelo caminho. Tem pulo e stomp em inimigos no melhor estilo Super Mario Bros, um chefe final e um power-up de invisibilidade. Desenvolvido na Universidade Lusófona por Pedro Fernandes (programação) e Gabriel Almeida (design e arte).",
     "tags": ["plataforma", "kawaii", "homebrew", "gameboy"],
     "link_oficial": "",
-    "destaque": true
+    "distribution_status": "PLAY_HERE",
+    "external_link": "",
+    "is_published": true,
+    "is_featured": true
   },
-    {
+  {
     "id": "nintendash-gb",
+    "slug": "nintendash",
     "titulo": "NintenDash",
-    "console": "Game Boy",
+    "plataforma": {
+      "slug": "game-boy",
+      "nome": "Game Boy",
+      "fabricante": "Nintendo",
+      "ano_lancamento": 1989
+    },
+    "criador": {
+      "slug": "superlex-303",
+      "nome": "Superlex_303",
+      "bio": "",
+      "site": ""
+    },
     "core": "gb",
-    "genero": ["Arcade", "Ritmo"],
     "ano": 2025,
-    "desenvolvedora": "Superlex_303",
+    "genero": ["Arcade", "Ritmo"],
     "jogadores": 1,
-    "capa": "assets/capas/nintendash-gb.jpg",
     "rom": "roms/gb/nintendash.gb",
+    "capa": "assets/capas/nintendash-gb.jpg",
+    "hero": "",
+    "screenshots": [],
     "resumo": "Geometry Dash simplificado para Game Boy: desvie de obstáculos no ritmo.",
     "sinopse": "NintenDash é uma versão de Geometry Dash feita para o Game Boy. Você controla um quadrado que precisa desviar de obstáculos enquanto avança por níveis progressivamente mais difíceis. A versão 1.1 adiciona 5 novos níveis, um sistema de icon kit com 3 ícones para escolher, paletas de cores alternativas e suporte a save state em hardware real. Feito por Superlex_303.",
     "tags": ["arcade", "ritmo", "homebrew", "gameboy"],
     "link_oficial": "https://superlex-303.itch.io/nintendash",
-    "destaque": false
+    "distribution_status": "PLAY_HERE",
+    "external_link": "",
+    "is_published": true,
+    "is_featured": false
   },
-    {
+  {
     "id": "simpletanks-gb",
+    "slug": "simpletanks",
     "titulo": "SimpleTanks",
-    "console": "Game Boy",
+    "plataforma": {
+      "slug": "game-boy",
+      "nome": "Game Boy",
+      "fabricante": "Nintendo",
+      "ano_lancamento": 1989
+    },
+    "criador": {
+      "slug": "teamempanadilla",
+      "nome": "TeamEmpanadilla",
+      "bio": "Coletivo de três estudantes espanhóis que criaram SimpleTanks em assembly de Game Boy.",
+      "site": "https://itch.io/profile/teamempanadilla"
+    },
     "core": "gb",
-    "genero": ["Ação", "Arcade"],
     "ano": 2024,
-    "desenvolvedora": "TeamEmpanadilla",
+    "genero": ["Ação", "Arcade"],
     "jogadores": 1,
-    "capa": "assets/capas/simpletanks-gb.jpg",
     "rom": "roms/gb/simpletanks.gb",
+    "capa": "assets/capas/simpletanks-gb.jpg",
+    "hero": "",
+    "screenshots": [],
     "resumo": "Tanque solitário contra ondas de caveiras voadoras em um campo de batalha compacto.",
     "sinopse": "SimpleTanks coloca você no controle de um tanque solitário enfrentando ondas de caveiras voadoras (Skulls). Elimine todos os inimigos antes que eles te sobrecarreguem. Cada caveira que encosta no seu tanque custa uma das três vidas. Um total de 66 liches aparecem ao longo do jogo, com até 5 na tela ao mesmo tempo. Feito em assembly de Game Boy por três estudantes: Alexandre Diego Martinez, Samuel Montilla Gómez e Marcos Serrano Adán. Código aberto sob licença MIT.",
     "tags": ["ação", "arcade", "homebrew", "gameboy", "assembly"],
     "link_oficial": "https://teamempanadilla.itch.io/simpletanks",
-    "destaque": true
+    "distribution_status": "PLAY_HERE",
+    "external_link": "",
+    "is_published": true,
+    "is_featured": true
   }
 ];
