@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>GAMECA — Jogos novos para máquinas antigas</title>
-  <meta name="description" content="Descubra e jogue homebrew contemporâneo para Game Boy, NES, SNES, Mega Drive, Master System e Atari 2600." />
+  <title>GAMECA — O arquivo vivo dos clássicos</title>
+  <meta name="description" content="O arquivo vivo dos clássicos. Jogue clássicos do Atari, NES, SNES, Mega Drive, Master System e Game Boy direto no navegador." />
 
   <!-- Google Search Console -->
   <meta name="google-site-verification" content="tanZB-_X_Gmg3iZa5zRl_kfUZRrcWidQwauFvLerap0" />
@@ -12,14 +12,14 @@
   <!-- Open Graph -->
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://gameca.com.br/" />
-  <meta property="og:title" content="GAMECA — Jogos novos para máquinas antigas" />
-  <meta property="og:description" content="Descubra e jogue homebrew contemporâneo para Game Boy, NES, SNES, Mega Drive, Master System e Atari 2600." />
+  <meta property="og:title" content="GAMECA — O arquivo vivo dos clássicos" />
+  <meta property="og:description" content="Jogue clássicos direto no navegador. Homebrew contemporâneo para hardware clássico." />
   <meta property="og:image" content="https://gameca.com.br/assets/og-image.jpg" />
 
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="GAMECA" />
-  <meta name="twitter:description" content="Jogos novos para máquinas antigas." />
+  <meta name="twitter:description" content="Where classics live." />
   <meta name="twitter:image" content="https://gameca.com.br/assets/og-image.jpg" />
 
   <meta name="theme-color" content="#0F0D0B" />
@@ -74,7 +74,7 @@
 <body class="bg-ink-800 text-cream font-sans antialiased overflow-x-hidden">
 
   <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:z-[100] focus:top-3 focus:left-3 focus:bg-rust focus:text-cream focus:px-4 focus:py-2 focus:rounded">
-    Pular para o conteúdo
+    Skip to content
   </a>
 
   <!-- ============================================================
@@ -85,7 +85,7 @@
 
     <div class="flex items-center gap-3 md:gap-8 px-4 md:px-10 h-16 md:h-[72px]">
 
-      <a href="#" id="logo-link" class="shrink-0 flex items-center" aria-label="GAMECA — Início">
+      <a href="#" id="logo-link" class="shrink-0 flex items-center" aria-label="GAMECA">
         <img src="assets/logos/gameca-logo-01.svg"
              alt="GAMECA"
              class="h-7 md:h-9 w-auto"
@@ -93,25 +93,33 @@
         <span class="font-display text-cream text-xl md:text-2xl tracking-tight hidden">GAMECA</span>
       </a>
 
-      <nav id="main-nav" class="hidden lg:flex items-center gap-1" aria-label="Navegação">
-        <button class="nav-link active" data-filter="todos">Play</button>
-        <button class="nav-link" data-filter="console">Discover</button>
-        <button class="nav-link" data-filter="Ação">Creators</button>
-        <button class="nav-link" data-filter="RPG">Hardware</button>
-        <button class="nav-link" data-filter="favoritos">Library</button>
+      <nav id="main-nav" class="hidden lg:flex items-center gap-1" aria-label="Navigation">
+        <button class="nav-link active" data-filter="todos" data-i18n="nav.play">Play</button>
+        <button class="nav-link" data-filter="console" data-i18n="nav.discover">Discover</button>
+        <button class="nav-link" data-filter="Ação" data-i18n="nav.creators">Creators</button>
+        <button class="nav-link" data-filter="RPG" data-i18n="nav.hardware">Hardware</button>
+        <button class="nav-link" data-filter="favoritos" data-i18n="nav.library">Library</button>
       </nav>
 
       <select id="mobile-category"
               class="lg:hidden bg-ink-700 border border-ink-500 rounded-sm px-2 py-1 text-xs font-mono uppercase tracking-wider text-cream"
-              aria-label="Navegação">
-        <option value="todos">Play</option>
-        <option value="console">Discover</option>
-        <option value="Ação">Creators</option>
-        <option value="RPG">Hardware</option>
-        <option value="favoritos">Library</option>
+              aria-label="Navigation">
+        <option value="todos" data-i18n="nav.play">Play</option>
+        <option value="console" data-i18n="nav.discover">Discover</option>
+        <option value="Ação" data-i18n="nav.creators">Creators</option>
+        <option value="RPG" data-i18n="nav.hardware">Hardware</option>
+        <option value="favoritos" data-i18n="nav.library">Library</option>
       </select>
 
       <div class="flex-1"></div>
+
+      <select id="lang-switcher"
+              class="bg-ink-700 border border-ink-500 rounded-sm px-2 py-1.5 text-xs font-mono uppercase tracking-wider text-cream hover:border-rust transition"
+              aria-label="Language">
+        <option value="pt">PT</option>
+        <option value="en">EN</option>
+        <option value="hi">HI</option>
+      </select>
 
       <div id="search-wrapper"
            class="flex items-center gap-2 bg-ink-700/60 border border-ink-500 rounded-sm
@@ -121,18 +129,20 @@
              viewBox="0 0 24 24" aria-hidden="true">
           <circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" stroke-linecap="round" />
         </svg>
-        <input id="search-input" type="search" placeholder="Buscar jogos, criadores..."
+        <input id="search-input" type="search"
+               data-i18n="search.placeholder"
+               placeholder="Buscar jogos, criadores..."
                autocomplete="off"
                class="bg-transparent outline-none text-sm w-full placeholder:text-cream-dim" />
-        <button id="search-clear" class="hidden text-cream-muted hover:text-cream text-lg leading-none" aria-label="Limpar busca">&times;</button>
+        <button id="search-clear" class="hidden text-cream-muted hover:text-cream text-lg leading-none" data-i18n-attr="aria-label" data-i18n="search.clear" aria-label="Limpar busca">&times;</button>
       </div>
 
       <span id="offline-badge"
             class="hidden items-center gap-1.5 text-[10px] font-mono font-semibold text-rust
                    border border-rust/50 rounded-full px-2 py-0.5 tracking-widest uppercase"
-            title="Você está offline">
+            title="Offline">
         <span class="w-1.5 h-1.5 rounded-full bg-rust"></span>
-        Offline
+        <span data-i18n="offline">Offline</span>
       </span>
     </div>
   </header>
@@ -164,7 +174,7 @@
                 class="font-mono text-[10px] md:text-[11px] font-bold tracking-[0.25em] uppercase
                        bg-rust text-cream rounded-sm px-2.5 py-1">—</span>
           <span class="hidden md:block h-px flex-1 max-w-[80px] bg-rust/50"></span>
-          <span class="hidden md:block font-mono text-[10px] tracking-[0.25em] text-rust uppercase font-semibold">Em destaque</span>
+          <span class="hidden md:block font-mono text-[10px] tracking-[0.25em] text-rust uppercase font-semibold" data-i18n="hero.badge">Em destaque</span>
         </div>
 
         <h1 id="hero-title"
@@ -181,14 +191,14 @@
                   class="inline-flex items-center gap-2.5 bg-rust text-cream font-bold text-sm md:text-base uppercase tracking-wider
                          px-7 py-3.5 rounded-sm hover:bg-rust-light transition active:scale-[0.98] shadow-[0_10px_30px_rgba(0,0,0,.5)]">
             <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
-            Jogar agora
+            <span data-i18n="hero.play">Jogar agora</span>
           </button>
 
           <button id="hero-info"
                   class="inline-flex items-center gap-2 border border-cream/30 text-cream
                          font-bold text-sm md:text-base uppercase tracking-wider px-7 py-3.5 rounded-sm
                          hover:bg-cream/10 hover:border-cream/60 transition active:scale-[0.98] backdrop-blur-sm">
-            Meet the game
+            <span data-i18n="hero.info">Meet the game</span>
           </button>
         </div>
 
@@ -210,26 +220,23 @@
     <div id="ad-slot-top" class="ad-slot ad-slot-horizontal mx-4 md:mx-10"></div>
 
     <section id="row-continue" class="hidden">
-      <h2 class="row-title">Continuar jogando</h2>
+      <h2 class="row-title" data-i18n="row.continue">Continuar jogando</h2>
       <div class="row-track" data-row="continue"></div>
     </section>
 
     <section id="row-search" class="hidden">
-      <h2 class="row-title">Resultados para <span id="search-term" class="text-rust"></span></h2>
+      <h2 class="row-title"><span data-i18n="row.results">Resultados para</span> <span id="search-term" class="text-rust"></span></h2>
       <div class="row-track" data-row="search"></div>
     </section>
 
     <div id="rows-container" class="space-y-10 md:space-y-14">
-
-      <!-- ANÚNCIO: meio (dentro do fluxo das fileiras) -->
       <div id="ad-slot-mid" class="ad-slot ad-slot-horizontal mx-4 md:mx-10" hidden></div>
-
     </div>
 
     <div id="empty-state" class="hidden text-center py-24 px-6">
       <p class="font-display text-6xl text-ink-500 mb-4">∅</p>
-      <h3 class="font-display text-3xl text-cream mb-2 uppercase tracking-tight">Nada por aqui</h3>
-      <p class="text-cream-muted text-sm">Tente outra busca ou explore outra categoria.</p>
+      <h3 class="font-display text-3xl text-cream mb-2 uppercase tracking-tight" data-i18n="empty.title">Nada por aqui</h3>
+      <p class="text-cream-muted text-sm" data-i18n="empty.text">Tente outra busca ou explore outra categoria.</p>
     </div>
 
     <div id="loading-rows" class="space-y-12 px-4 md:px-10">
@@ -259,15 +266,13 @@
              alt="GAMECA"
              class="h-24 md:h-28 w-auto"
              onerror="this.style.display='none';" />
-        <p class="font-mono text-[10px] tracking-[0.25em] uppercase text-rust md:text-right">
-          Jogos novos<br class="md:hidden" /> para máquinas antigas
+        <p class="font-mono text-[10px] tracking-[0.25em] uppercase text-rust md:text-right" data-i18n="footer.tagline">
+          O arquivo vivo dos clássicos.
         </p>
       </div>
       <div class="border-t border-ink-600 pt-6 grid md:grid-cols-2 gap-4">
-        <p class="text-xs text-cream-muted leading-relaxed">
-          Homebrew contemporâneo para hardware clássico, rodando no navegador via
-          <span class="text-cream-soft">EmulatorJS</span>. Todos os jogos são distribuídos
-          com autorização dos criadores ou sob licença livre.
+        <p class="text-xs text-cream-muted leading-relaxed" data-i18n="footer.body">
+          Clássicos para hardware clássico, rodando no navegador via EmulatorJS.
         </p>
         <p class="font-mono text-[10px] tracking-[0.2em] uppercase text-cream-dim md:text-right">
           © <span id="year"></span> GAMECA
@@ -291,7 +296,7 @@
       <button id="detail-close"
               class="absolute top-4 right-4 z-20 w-9 h-9 rounded-sm bg-ink-900/80 hover:bg-ink-900
                      border border-ink-600 flex items-center justify-center text-xl leading-none transition text-cream"
-              aria-label="Fechar detalhes">&times;</button>
+              aria-label="Close">&times;</button>
 
       <div class="relative h-56 md:h-80 w-full overflow-hidden bg-ink-700">
         <img id="detail-backdrop-img" src="" alt="" class="w-full h-full object-cover opacity-70" />
@@ -315,12 +320,14 @@
                   class="inline-flex items-center gap-2 bg-rust text-cream font-bold uppercase tracking-wider px-7 py-3.5 rounded-sm
                          hover:bg-rust-light transition active:scale-[0.98]">
             <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
-            Jogar
+            <span data-i18n="detail.play">Jogar</span>
           </button>
 
           <button id="detail-fav"
                   class="w-12 h-12 rounded-sm border border-cream/25 hover:border-rust
-                         flex items-center justify-center transition text-cream" aria-label="Adicionar à biblioteca" aria-pressed="false">
+                         flex items-center justify-center transition text-cream"
+                  data-i18n-attr="aria-label" data-i18n="detail.favorite"
+                  aria-label="Adicionar à biblioteca" aria-pressed="false">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
               <path d="M12 5v14M5 12h14" stroke-linecap="round"/>
             </svg>
@@ -337,18 +344,18 @@
   <!-- ============================================================
        EMULADOR
   ============================================================ -->
-  <div id="emulator-overlay" class="fixed inset-0 z-[60] hidden bg-black flex-col" role="dialog" aria-modal="true" aria-label="Emulador">
+  <div id="emulator-overlay" class="fixed inset-0 z-[60] hidden bg-black flex-col" role="dialog" aria-modal="true" aria-label="Emulator">
     <div id="emulator-bar"
          class="absolute top-0 inset-x-0 z-30 flex items-center gap-3 px-3 md:px-5 h-12
                 bg-gradient-to-b from-black/95 to-transparent transition-opacity duration-300">
       <button id="emulator-close"
               class="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-widest font-semibold px-3 py-1.5 rounded-sm
                      border border-cream/20 hover:bg-rust hover:border-rust transition text-cream"
-              aria-label="Fechar emulador">
+              aria-label="Exit">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
           <path d="m15 6-6 6 6 6" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
-        Sair
+        <span data-i18n="emulator.exit">Sair</span>
       </button>
 
       <span id="emulator-title" class="text-sm md:text-base font-semibold truncate text-cream">—</span>
@@ -359,17 +366,17 @@
 
       <div class="flex-1"></div>
 
-      <span id="emulator-save-status" class="font-mono text-[11px] text-rust opacity-0 transition-opacity tracking-widest uppercase">
+      <span id="emulator-save-status" class="font-mono text-[11px] text-rust opacity-0 transition-opacity tracking-widest uppercase" data-i18n="emulator.save">
         ● Save
       </span>
 
-      <button id="emulator-fullscreen" class="w-8 h-8 rounded flex items-center justify-center hover:bg-cream/15 transition text-cream" aria-label="Tela cheia">
+      <button id="emulator-fullscreen" class="w-8 h-8 rounded flex items-center justify-center hover:bg-cream/15 transition text-cream" aria-label="Fullscreen">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
           <path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </button>
 
-      <button id="emulator-restart" class="w-8 h-8 rounded flex items-center justify-center hover:bg-cream/15 transition text-cream" aria-label="Reiniciar jogo">
+      <button id="emulator-restart" class="w-8 h-8 rounded flex items-center justify-center hover:bg-cream/15 transition text-cream" aria-label="Restart">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
           <path d="M3 12a9 9 0 1 0 3-6.7M3 4v5h5" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
@@ -382,20 +389,21 @@
       <div id="emulator-loading"
            class="absolute inset-0 z-20 flex flex-col items-center justify-center gap-5 bg-ink-900">
         <div class="w-12 h-12 rounded-full border-4 border-ink-600 border-t-rust animate-spin-slow"></div>
-        <p id="emulator-loading-text" class="font-mono text-xs uppercase tracking-[0.3em] text-cream-muted">Carregando emulador</p>
+        <p id="emulator-loading-text" class="font-mono text-xs uppercase tracking-[0.3em] text-cream-muted" data-i18n="emulator.loading">Carregando emulador</p>
         <div class="w-56 h-1 bg-ink-700 rounded-full overflow-hidden">
           <div id="emulator-progress" class="h-full w-0 bg-rust transition-all duration-300"></div>
         </div>
-        <button id="emulator-cancel" class="font-mono text-[10px] uppercase tracking-[0.25em] text-cream-dim hover:text-cream underline underline-offset-4">Cancelar</button>
+        <button id="emulator-cancel" class="font-mono text-[10px] uppercase tracking-[0.25em] text-cream-dim hover:text-cream underline underline-offset-4" data-i18n="emulator.cancel">Cancelar</button>
       </div>
 
       <div id="emulator-error"
            class="hidden absolute inset-0 z-30 flex-col items-center justify-center gap-4 bg-ink-900 px-6 text-center">
         <p class="font-display text-5xl text-ink-500">!</p>
-        <h3 class="font-display text-2xl text-cream uppercase tracking-tight">Não foi possível iniciar</h3>
+        <h3 class="font-display text-2xl text-cream uppercase tracking-tight" data-i18n="emulator.error.title">Não foi possível iniciar</h3>
         <p id="emulator-error-msg" class="text-sm text-cream-muted max-w-md"></p>
         <button id="emulator-error-close"
-                class="mt-2 bg-cream text-ink-900 font-bold uppercase tracking-wider px-6 py-3 rounded-sm hover:bg-cream-soft transition">
+                class="mt-2 bg-cream text-ink-900 font-bold uppercase tracking-wider px-6 py-3 rounded-sm hover:bg-cream-soft transition"
+                data-i18n="emulator.error.back">
           Voltar ao catálogo
         </button>
       </div>
@@ -419,7 +427,7 @@
         <span class="card-console font-mono text-[9px] font-bold uppercase tracking-[0.2em] text-rust mb-1"></span>
         <span class="card-title text-xs font-semibold leading-tight line-clamp-2 text-cream"></span>
         <span class="card-play mt-2 inline-flex items-center gap-1 font-mono text-[9px] font-bold tracking-[0.2em] text-cream uppercase">
-          ▶ Jogar
+          ▶ <span data-i18n="detail.play">Jogar</span>
         </span>
       </div>
       <span class="card-fav absolute top-2 right-2 text-xs opacity-0 group-hover:opacity-100 transition">★</span>
@@ -431,8 +439,8 @@
       <div class="flex items-end justify-between px-4 md:px-10 mb-3 gap-3">
         <h2 class="row-title"></h2>
         <div class="hidden md:flex gap-1 opacity-0 group-hover/row:opacity-100 transition shrink-0">
-          <button class="row-prev w-8 h-8 rounded-sm border border-ink-500 hover:border-cream hover:bg-ink-700 flex items-center justify-center text-cream transition" aria-label="Anterior">‹</button>
-          <button class="row-next w-8 h-8 rounded-sm border border-ink-500 hover:border-cream hover:bg-ink-700 flex items-center justify-center text-cream transition" aria-label="Próximo">›</button>
+          <button class="row-prev w-8 h-8 rounded-sm border border-ink-500 hover:border-cream hover:bg-ink-700 flex items-center justify-center text-cream transition" aria-label="Previous">‹</button>
+          <button class="row-next w-8 h-8 rounded-sm border border-ink-500 hover:border-cream hover:bg-ink-700 flex items-center justify-center text-cream transition" aria-label="Next">›</button>
         </div>
       </div>
       <div class="row-track"></div>
@@ -447,6 +455,7 @@
   </template>
 
   <script src="data/jogos.js"></script>
+  <script src="data/i18n.js"></script>
   <script src="js/storage.js"></script>
   <script src="js/emulator.js"></script>
   <script src="js/app.js"></script>
