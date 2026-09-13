@@ -42,6 +42,7 @@ function cacheDom() {
   dom.rowSearch         = $('#row-search');
   dom.searchTerm        = $('#search-term');
   dom.rowsContainer     = $('#rows-container');
+  dom.adSlotMid         = $('#ad-slot-mid');
   dom.emptyState        = $('#empty-state');
   dom.loadingRows       = $('#loading-rows');
 
@@ -78,11 +79,6 @@ function escapeHtml(s) {
     '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
   }[c]));
 }
-
-/* ============================================================
-   HELPERS DE PLATAFORMA / CRIADOR
-   Compatível com estrutura antiga (string) e nova (objeto)
-   ============================================================ */
 
 function getPlataformaNome(game) {
   if (!game) return '';
@@ -228,11 +224,37 @@ function resetHeroTimer() {
 }
 
 /* ============================================================
-   FILEIRAS
+   FILEIRAS + SLOT DO MEIO
    ============================================================ */
 
+function posicionarAdSlotMid(posicao) {
+  const slot = dom.adSlotMid;
+  const container = dom.rowsContainer;
+  if (!slot || !container) return;
+
+  const rows = Array.from(container.querySelectorAll(':scope > .row'));
+
+  if (rows.length < 2) {
+    slot.hidden = true;
+    return;
+  }
+
+  const idx = Math.min(posicao, rows.length - 1);
+  const referencia = rows[idx];
+
+  referencia.insertAdjacentElement('afterend', slot);
+  slot.hidden = false;
+}
+
 function buildHomeRows() {
-  dom.rowsContainer.innerHTML = '';
+  const container = dom.rowsContainer;
+  const slot = dom.adSlotMid;
+
+  if (slot && slot.parentElement !== container) {
+    container.appendChild(slot);
+  }
+
+  container.querySelectorAll(':scope > .row').forEach(r => r.remove());
 
   const byPlataforma = new Map();
   state.games.forEach(g => {
@@ -249,7 +271,7 @@ function buildHomeRows() {
 
   keys.forEach(k => {
     const list = byPlataforma.get(k);
-    if (list.length) dom.rowsContainer.appendChild(buildRow(`Clássicos do ${k}`, list, `plataforma-${slugify(k)}`));
+    if (list.length) container.appendChild(buildRow(`Clássicos do ${k}`, list, `plataforma-${slugify(k)}`));
   });
 
   const byGenre = new Map();
@@ -263,13 +285,15 @@ function buildHomeRows() {
   [...byGenre.entries()]
     .filter(([, list]) => list.length >= 2)
     .forEach(([gen, list]) => {
-      dom.rowsContainer.appendChild(buildRow(`Destaques em ${gen}`, list, `genero-${slugify(gen)}`));
+      container.appendChild(buildRow(`Destaques em ${gen}`, list, `genero-${slugify(gen)}`));
     });
 
   const shuffled = [...state.games].sort((a, b) =>
     slugify(a.id).localeCompare(slugify(b.id))
   );
-  dom.rowsContainer.appendChild(buildRow('Descubra novos clássicos', shuffled, 'descubra'));
+  container.appendChild(buildRow('Descubra novos clássicos', shuffled, 'descubra'));
+
+  posicionarAdSlotMid(1);
 }
 
 function renderContinueRow() {
@@ -361,7 +385,8 @@ function applyFilter(filter) {
   }
 
   dom.rowContinue.classList.add('hidden');
-  dom.rowsContainer.innerHTML = '';
+  dom.rowsContainer.querySelectorAll(':scope > .row').forEach(r => r.remove());
+  if (dom.adSlotMid) dom.adSlotMid.hidden = true;
 
   if (filter === 'favoritos') {
     const list = favorites.all().map(id => state.byId.get(id)).filter(Boolean);
@@ -384,6 +409,7 @@ function applyFilter(filter) {
     [...byPlataforma.entries()].forEach(([k, list]) => {
       dom.rowsContainer.appendChild(buildRow(k, list, `plataforma-${slugify(k)}`));
     });
+    posicionarAdSlotMid(1);
     return;
   }
 
