@@ -6,11 +6,11 @@
 window.I18N = {
 
   pt: {
-    'nav.play': 'Play',
-    'nav.discover': 'Discover',
-    'nav.creators': 'Creators',
+    'nav.play': 'Jogar',
+    'nav.discover': 'Descobrir',
+    'nav.creators': 'Criadores',
     'nav.hardware': 'Hardware',
-    'nav.library': 'Library',
+    'nav.library': 'Biblioteca',
 
     'search.placeholder': 'Buscar jogos, criadores...',
     'search.clear': 'Limpar busca',
@@ -19,7 +19,7 @@ window.I18N = {
 
     'hero.badge': 'Em destaque',
     'hero.play': 'Jogar agora',
-    'hero.info': 'Meet the game',
+    'hero.info': 'Conheça o jogo',
 
     'row.continue': 'Continuar jogando',
     'row.results': 'Resultados para',
