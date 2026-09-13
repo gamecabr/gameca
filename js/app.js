@@ -14,7 +14,8 @@ const state = {
   heroIndex:     0,
   heroPool:      [],
   heroTimer:     null,
-  currentGame:   null
+  currentGame:   null,
+  lang:          'pt'
 };
 
 const $  = (sel, root = document) => root.querySelector(sel);
@@ -22,12 +23,85 @@ const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
 
 const dom = {};
 
+/* ============================================================
+   i18n
+   ============================================================ */
+
+function detectLang() {
+  try {
+    const saved = localStorage.getItem('gameca:lang');
+    if (saved && window.I18N?.[saved]) return saved;
+
+    const nav = (navigator.language || 'pt').toLowerCase();
+    if (nav.startsWith('pt')) return 'pt';
+    if (nav.startsWith('hi')) return 'hi';
+    if (nav.startsWith('en')) return 'en';
+    return 'pt';
+  } catch {
+    return 'pt';
+  }
+}
+
+function t(key, vars) {
+  const dict = window.I18N?.[state.lang] || window.I18N?.pt || {};
+  let str = dict[key] ?? key;
+  if (vars) {
+    for (const k in vars) {
+      str = str.replace(new RegExp(`\\{${k}\\}`, 'g'), vars[k]);
+    }
+  }
+  return str;
+}
+
+function applyI18n() {
+  const dict = window.I18N?.[state.lang] || window.I18N?.pt || {};
+
+  $$('[data-i18n]').forEach(el => {
+    const key = el.dataset.i18n;
+    const val = dict[key];
+    if (val === undefined) return;
+
+    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+      el.placeholder = val;
+    } else {
+      el.textContent = val;
+    }
+  });
+
+  $$('[data-i18n-attr]').forEach(el => {
+    const key = el.dataset.i18n;
+    const attr = el.dataset.i18nAttr;
+    const val = dict[key];
+    if (val !== undefined && attr) el.setAttribute(attr, val);
+  });
+
+  document.documentElement.lang = state.lang === 'pt' ? 'pt-BR' : state.lang;
+}
+
+function setLang(lang) {
+  if (!window.I18N?.[lang]) return;
+  state.lang = lang;
+  try { localStorage.setItem('gameca:lang', lang); } catch {}
+  applyI18n();
+  if (dom.langSwitcher) dom.langSwitcher.value = lang;
+  if (state.games.length) {
+    renderHero();
+    buildHomeRows();
+    renderContinueRow();
+  }
+}
+
+/* ============================================================
+   DOM
+   ============================================================ */
+
 function cacheDom() {
   dom.header            = $('#app-header');
   dom.searchInput       = $('#search-input');
   dom.searchClear       = $('#search-clear');
   dom.mobileCat         = $('#mobile-category');
   dom.navLinks          = $$('#main-nav .nav-link');
+  dom.langSwitcher      = $('#lang-switcher');
 
   dom.heroBackdrop      = $('#hero-backdrop');
   dom.heroBadge         = $('#hero-badge');
@@ -66,6 +140,10 @@ function cacheDom() {
   dom.tplFicha          = $('#tpl-ficha');
 }
 
+/* ============================================================
+   HELPERS
+   ============================================================ */
+
 function slugify(s) {
   return String(s)
     .toLowerCase()
@@ -96,12 +174,23 @@ function getCriadorNome(game) {
   return '';
 }
 
+function playersLabel(n) {
+  const num = Number(n);
+  if (!num) return '';
+  const key = num === 1 ? 'players.count' : 'players.count_plural';
+  return t(key, { n: num });
+}
+
+/* ============================================================
+   CARD / ROW
+   ============================================================ */
+
 function buildCard(game) {
   const node = dom.tplCard.content.firstElementChild.cloneNode(true);
   node.dataset.gameId = game.id;
 
   const img = $('.card-cover', node);
-  img.alt = `Capa de ${game.titulo}`;
+  img.alt = game.titulo || '';
 
   img.addEventListener('error', () => {
     img.removeAttribute('src');
@@ -192,7 +281,7 @@ function renderHero() {
   const metaParts = [];
   if (game.ano) metaParts.push(game.ano);
   if (getCriadorNome(game)) metaParts.push(getCriadorNome(game));
-  if (game.jogadores) metaParts.push(`${game.jogadores} jogador${game.jogadores === 1 ? '' : 'es'}`);
+  if (game.jogadores) metaParts.push(playersLabel(game.jogadores));
   if (game.genero?.length) metaParts.push(game.genero.join(' • '));
   dom.heroMeta.textContent = metaParts.join('  ·  ');
 
@@ -271,7 +360,9 @@ function buildHomeRows() {
 
   keys.forEach(k => {
     const list = byPlataforma.get(k);
-    if (list.length) container.appendChild(buildRow(`Clássicos do ${k}`, list, `plataforma-${slugify(k)}`));
+    if (list.length) {
+      container.appendChild(buildRow(t('row.platform', { name: k }), list, `plataforma-${slugify(k)}`));
+    }
   });
 
   const byGenre = new Map();
@@ -285,15 +376,14 @@ function buildHomeRows() {
   [...byGenre.entries()]
     .filter(([, list]) => list.length >= 2)
     .forEach(([gen, list]) => {
-      container.appendChild(buildRow(`Destaques em ${gen}`, list, `genero-${slugify(gen)}`));
+      container.appendChild(buildRow(t('row.genre', { name: gen }), list, `genero-${slugify(gen)}`));
     });
 
   const shuffled = [...state.games].sort((a, b) =>
     slugify(a.id).localeCompare(slugify(b.id))
   );
-  container.appendChild(buildRow('Descubra novos clássicos', shuffled, 'descubra'));
+  container.appendChild(buildRow(t('row.discover'), shuffled, 'descubra'));
 
-  // Slot do meio → depois da 3ª fileira (índice 2)
   posicionarAdSlotMid(2);
 }
 
@@ -306,6 +396,9 @@ function renderContinueRow() {
   const track = $('.row-track', dom.rowContinue);
   track.innerHTML = '';
   items.forEach(g => track.appendChild(buildCard(g)));
+
+  const title = $('.row-title', dom.rowContinue);
+  if (title) title.textContent = t('row.continue');
 }
 
 /* ============================================================
@@ -313,7 +406,7 @@ function renderContinueRow() {
    ============================================================ */
 
 function renderSearchRow(results, term) {
-  dom.searchTerm.textContent = `"${term}"`;
+  if (dom.searchTerm) dom.searchTerm.textContent = `"${term}"`;
 
   if (!results.length) {
     dom.rowSearch.classList.add('hidden');
@@ -394,7 +487,7 @@ function applyFilter(filter) {
     if (!list.length) { dom.emptyState.classList.remove('hidden'); return; }
     dom.emptyState.classList.add('hidden');
     dom.rowsContainer.classList.remove('hidden');
-    dom.rowsContainer.appendChild(buildRow('Minha Lista', list, 'favoritos'));
+    dom.rowsContainer.appendChild(buildRow(t('row.favorites'), list, 'favoritos'));
     return;
   }
 
@@ -441,20 +534,20 @@ function openDetail(gameId) {
 
   const metaParts = [];
   if (game.ano) metaParts.push(game.ano);
-  if (game.jogadores) metaParts.push(`${game.jogadores} jogador${game.jogadores === 1 ? '' : 'es'}`);
+  if (game.jogadores) metaParts.push(playersLabel(game.jogadores));
   if (game.genero?.length) metaParts.push(game.genero.join(' • '));
   dom.detailMeta.textContent = metaParts.join('  ·  ');
 
-  dom.detailResumo.textContent = game.sinopse || game.resumo || 'Sem descrição disponível.';
+  dom.detailResumo.textContent = game.sinopse || game.resumo || t('detail.no_description');
 
   dom.detailFicha.innerHTML = '';
   const fichaData = [
-    ['Console',        getPlataformaNome(game)],
-    ['Desenvolvedora', getCriadorNome(game)],
-    ['Ano',            game.ano],
-    ['Gênero',         (game.genero || []).join(', ')],
-    ['Jogadores',      game.jogadores],
-    ['Tags',           (game.tags || []).join(', ')]
+    [t('detail.console'),   getPlataformaNome(game)],
+    [t('detail.developer'), getCriadorNome(game)],
+    [t('detail.year'),      game.ano],
+    [t('detail.genre'),     (game.genero || []).join(', ')],
+    [t('detail.players'),   game.jogadores],
+    [t('detail.tags'),      (game.tags || []).join(', ')]
   ].filter(([, v]) => v);
 
   fichaData.forEach(([k, v]) => {
@@ -504,7 +597,7 @@ async function startGame(gameId) {
     await play(game);
   } catch (e) {
     console.error('[app] falha ao iniciar jogo:', e);
-    toast('Não foi possível iniciar o jogo.');
+    toast(t('toast.play_error'));
   }
 }
 
@@ -548,6 +641,8 @@ function bindEvents() {
 
   dom.mobileCat?.addEventListener('change', e => applyFilter(e.target.value));
 
+  dom.langSwitcher?.addEventListener('change', e => setLang(e.target.value));
+
   document.getElementById('logo-link')?.addEventListener('click', (e) => {
     e.preventDefault();
     applyFilter('todos');
@@ -564,7 +659,7 @@ function bindEvents() {
     if (!state.currentGame) return;
     const isFav = favorites.toggle(state.currentGame.id);
     updateFavButton(state.currentGame.id);
-    toast(isFav ? '★ Adicionado à biblioteca' : '☆ Removido da biblioteca');
+    toast(isFav ? t('toast.added') : t('toast.removed'));
   });
 
   events.on('favorites:changed', () => {
@@ -591,12 +686,14 @@ function bindEvents() {
 
 function loadGames() {
   const data = window.JOGOS;
-  if (!Array.isArray(data)) throw new Error('window.JOGOS não encontrado. Verifique data/jogos.js.');
+  if (!Array.isArray(data)) throw new Error('window.JOGOS não encontrado.');
   return data.filter(g => g.is_published !== false);
 }
 
 function init() {
   cacheDom();
+
+  state.lang = detectLang();
 
   let games;
   try {
@@ -615,6 +712,10 @@ function init() {
   }
 
   if (dom.loadingRows) dom.loadingRows.classList.add('hidden');
+
+  if (dom.langSwitcher) dom.langSwitcher.value = state.lang;
+
+  applyI18n();
 
   pickHeroPool();
   renderHero();
