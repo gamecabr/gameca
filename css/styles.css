@@ -47,13 +47,11 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   border-bottom: 1px solid #252220;
 }
 
-/* fio superior em ferrugem */
 .header-rule {
   height: 3px;
   background: #C13524;
 }
 
-/* nav */
 .nav-link {
   position: relative;
   padding: 8px 14px;
@@ -79,25 +77,13 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 /* ============================================================
    HERO
    ============================================================ */
-#hero-backdrop { transition: opacity .7s ease, background-image .5s; will-change: opacity; }
+#hero-backdrop { transition: opacity .7s ease; will-change: opacity; }
 
 #hero-dots button {
   height: 3px;
   transition: width .3s, background .3s, transform .2s;
 }
 #hero-dots button:hover { transform: scaleY(1.5); }
-
-/* ============================================================
-   TICKER / MARQUEE
-   ============================================================ */
-.marquee-item {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 11px;
-  letter-spacing: 0.28em;
-  color: #C13524;
-  padding-right: 2.5rem;
-  text-transform: uppercase;
-}
 
 /* ============================================================
    TÍTULOS DE FILEIRA
@@ -116,17 +102,6 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 }
 @media (min-width: 768px) {
   .row-title { font-size: 1.9rem; padding: 0 2.5rem; }
-}
-.row-num {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.65rem;
-  color: #C13524;
-  letter-spacing: 0.2em;
-  padding-top: 0.35rem;
-  font-weight: 600;
-}
-@media (min-width: 768px) {
-  .row-num { font-size: 0.75rem; }
 }
 
 /* ============================================================
@@ -147,186 +122,4 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   .row-track { gap: 0.85rem; padding: 0.5rem 2.5rem 1.75rem; }
 }
 .row-track::-webkit-scrollbar { height: 6px; }
-.row-track::-webkit-scrollbar-track { background: transparent; }
-.row-track::-webkit-scrollbar-thumb { background: rgba(242,237,228,.15); border-radius: 3px; }
-.row-track::-webkit-scrollbar-thumb:hover { background: rgba(242,237,228,.35); }
-
-.row-prev, .row-next { font-size: 1.15rem; line-height: 1; transition: transform .15s, border-color .2s, background .2s; }
-.row-prev:hover, .row-next:hover { transform: scale(1.06); }
-
-/* ============================================================
-   CARDS
-   ============================================================ */
-.card {
-  cursor: pointer;
-  will-change: transform;
-  border: 1px solid #252220;
-  transition:
-    transform .22s cubic-bezier(.22,1,.36,1),
-    border-color .25s,
-    box-shadow .25s;
-}
-.card:hover {
-  border-color: rgba(193,53,36,.7);
-  box-shadow: 0 20px 40px rgba(0,0,0,.7);
-}
-.card:active { transform: scale(1.01); }
-
-.card-cover { width: 100%; aspect-ratio: 3 / 4; object-fit: cover; background: #1A1715; }
-
-.card-fallback {
-  width: 100%;
-  aspect-ratio: 3 / 4;
-}
-
-.card-fav {
-  filter: drop-shadow(0 1px 2px rgba(0,0,0,.85));
-  color: #C13524;
-  font-size: 1rem;
-  transition: opacity .2s;
-}
-
-/* ============================================================
-   MODAL DE DETALHES
-   ============================================================ */
-#detail-modal { align-items: center; justify-content: center; }
-
-#detail-box::-webkit-scrollbar { width: 8px; }
-#detail-box::-webkit-scrollbar-track { background: transparent; }
-#detail-box::-webkit-scrollbar-thumb { background: rgba(242,237,228,.15); border-radius: 4px; }
-#detail-box::-webkit-scrollbar-thumb:hover { background: rgba(242,237,228,.3); }
-
-#detail-ficha dt { font-weight: 500; color: #5A554D; }
-#detail-ficha dd { word-break: break-word; color: #D9D2C3; }
-
-#detail-fav { transition: background-color .2s, border-color .2s, transform .15s; }
-#detail-fav:hover  { transform: scale(1.05); border-color: #C13524; }
-#detail-fav:active { transform: scale(.95); }
-#detail-fav[aria-pressed="true"] {
-  background: rgba(193,53,36,.18);
-  border-color: #C13524;
-  color: #C13524;
-}
-
-/* ============================================================
-   GERENCIADOR / BIBLIOTECA
-   ============================================================ */
-.dropzone {
-  border: 2px dashed rgba(242,237,228,.2);
-  border-radius: 2px;
-  padding: 2.25rem 1.5rem;
-  text-align: center;
-  cursor: pointer;
-  transition: border-color .2s, background .2s;
-  background: rgba(242,237,228,.015);
-  position: relative;
-  overflow: hidden;
-}
-.dropzone:hover,
-.dropzone.is-over {
-  border-color: #C13524;
-  background: rgba(193,53,36,.06);
-}
-.dropzone-small {
-  padding: 1rem;
-  min-height: 96px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.dropzone-preview {
-  width: 100%;
-  max-height: 140px;
-  object-fit: cover;
-  border-radius: 2px;
-}
-.dropzone-filled { text-align: center; padding: .5rem 0; }
-
-.form-input {
-  width: 100%;
-  background: #1A1715;
-  border: 1px solid #252220;
-  color: #F2EDE4;
-  padding: .7rem .9rem;
-  border-radius: 2px;
-  font-size: .875rem;
-  transition: border-color .15s;
-}
-.form-input:focus {
-  outline: none;
-  border-color: #C13524;
-}
-.form-input::placeholder { color: #5A554D; }
-
-/* ============================================================
-   EMULADOR
-   ============================================================ */
-#emulator-overlay { background: #000; animation: fade-in .25s ease-out; }
-
-#emulator-stage { position: relative; width: 100%; height: 100%; overflow: hidden; }
-
-#game {
-  width: 100% !important;
-  height: 100% !important;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-#game canvas, #game > div { max-width: 100% !important; max-height: 100% !important; margin: 0 auto; }
-
-#emulator-bar { transition: opacity .3s; }
-#emulator-save-status { transition: opacity .35s ease; }
-
-/* ============================================================
-   SKELETON
-   ============================================================ */
-@keyframes pulse-soft {
-  0%, 100% { opacity: .5; }
-  50%      { opacity: .2; }
-}
-.animate-pulse { animation: pulse-soft 1.6s ease-in-out infinite; }
-
-/* ============================================================
-   FOCUS
-   ============================================================ */
-:focus-visible { outline: 2px solid #C13524; outline-offset: 2px; border-radius: 2px; }
-.card:focus:not(:focus-visible) { outline: none; }
-
-/* ============================================================
-   SELEÇÃO / SCROLLBAR GLOBAL
-   ============================================================ */
-::selection { background: #C13524; color: #F2EDE4; }
-
-body::-webkit-scrollbar { width: 10px; }
-body::-webkit-scrollbar-track { background: #080706; }
-body::-webkit-scrollbar-thumb { background: #252220; border-radius: 5px; }
-body::-webkit-scrollbar-thumb:hover { background: #3A3532; }
-
-/* ============================================================
-   MOBILE
-   ============================================================ */
-@media (max-width: 640px) {
-  .row-title { font-size: 1.25rem; }
-  #hero-backdrop { background-position: center 30%; }
-  #detail-box { border-radius: 0; }
-}
-
-/* ============================================================
-   REDUCED MOTION
-   ============================================================ */
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: .001ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: .001ms !important;
-    scroll-behavior: auto !important;
-  }
-}
-
-/* ============================================================
-   IMPRESSÃO
-   ============================================================ */
-@media print {
-  #app-header, #emulator-overlay, #detail-modal, #manager-modal, #toast-container, footer { display: none !important; }
-  body { background: #fff; color: #000; }
-}
+.row-track::-
