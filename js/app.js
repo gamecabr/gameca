@@ -79,6 +79,27 @@ function escapeHtml(s) {
   }[c]));
 }
 
+/* ============================================================
+   HELPERS DE PLATAFORMA / CRIADOR
+   Compatível com estrutura antiga (string) e nova (objeto)
+   ============================================================ */
+
+function getPlataformaNome(game) {
+  if (!game) return '';
+  if (game.plataforma?.nome) return game.plataforma.nome;
+  if (typeof game.plataforma === 'string') return game.plataforma;
+  if (game.console) return game.console;
+  return '';
+}
+
+function getCriadorNome(game) {
+  if (!game) return '';
+  if (game.criador?.nome) return game.criador.nome;
+  if (typeof game.criador === 'string') return game.criador;
+  if (game.desenvolvedora) return game.desenvolvedora;
+  return '';
+}
+
 function buildCard(game) {
   const node = dom.tplCard.content.firstElementChild.cloneNode(true);
   node.dataset.gameId = game.id;
@@ -96,15 +117,15 @@ function buildCard(game) {
       fb.innerHTML = `
         <span class="text-3xl">🎮</span>
         <span class="text-[11px] font-bold leading-tight text-cream">${escapeHtml(game.titulo)}</span>
-        <span class="text-[9px] uppercase tracking-widest text-rust font-mono">${escapeHtml(game.console)}</span>
+        <span class="text-[9px] uppercase tracking-widest text-rust font-mono">${escapeHtml(getPlataformaNome(game))}</span>
       `;
       node.insertBefore(fb, node.firstChild);
     }
   });
   img.src = game.capa || '';
 
-  $('.card-console', node).textContent = game.console || '';
-  $('.card-title',   node).textContent = game.titulo  || '';
+  $('.card-console', node).textContent = getPlataformaNome(game);
+  $('.card-title',   node).textContent = game.titulo || '';
 
   if (favorites.has(game.id)) {
     const fav = $('.card-fav', node);
@@ -150,7 +171,7 @@ function toast(msg, ms = 2600) {
    ============================================================ */
 
 function pickHeroPool() {
-  const destaques = state.games.filter(g => g.destaque);
+  const destaques = state.games.filter(g => g.is_featured || g.destaque);
   state.heroPool = destaques.length ? destaques : state.games.slice(0, 5);
   state.heroIndex = 0;
 }
@@ -159,31 +180,22 @@ function renderHero() {
   if (!state.heroPool.length) return;
   const game = state.heroPool[state.heroIndex % state.heroPool.length];
 
-  dom.heroBackdrop.style.opacity = '0';
+  const img = dom.heroBackdrop;
+  if (!img) return;
 
   const bg = game.hero || game.capa || '';
 
-  const img = new Image();
-  img.onload = () => {
-    dom.heroBackdrop.style.backgroundImage = `url("${bg}")`;
-    dom.heroBackdrop.style.backgroundSize  = 'cover';
-    dom.heroBackdrop.style.backgroundPosition = 'center 30%';
-    dom.heroBackdrop.style.filter = 'blur(1px) brightness(.75)';
-    dom.heroBackdrop.style.opacity = '1';
-  };
-  img.onerror = () => {
-    dom.heroBackdrop.style.backgroundImage = 'radial-gradient(ellipse at 30% 40%, #252220 0%, #0F0D0B 70%)';
-    dom.heroBackdrop.style.filter = 'none';
-    dom.heroBackdrop.style.opacity = '1';
-  };
+  img.style.opacity = '0';
+  img.onload = () => { img.style.opacity = '1'; };
+  img.onerror = () => { img.removeAttribute('src'); img.style.opacity = '0'; };
   img.src = bg;
 
-  dom.heroBadge.textContent = game.console || '';
-  dom.heroTitle.textContent = game.titulo  || '';
+  dom.heroBadge.textContent = getPlataformaNome(game);
+  dom.heroTitle.textContent = game.titulo || '';
 
   const metaParts = [];
   if (game.ano) metaParts.push(game.ano);
-  if (game.desenvolvedora) metaParts.push(game.desenvolvedora);
+  if (getCriadorNome(game)) metaParts.push(getCriadorNome(game));
   if (game.jogadores) metaParts.push(`${game.jogadores} jogador${game.jogadores === 1 ? '' : 'es'}`);
   if (game.genero?.length) metaParts.push(game.genero.join(' • '));
   dom.heroMeta.textContent = metaParts.join('  ·  ');
@@ -222,22 +234,22 @@ function resetHeroTimer() {
 function buildHomeRows() {
   dom.rowsContainer.innerHTML = '';
 
-  const byConsole = new Map();
+  const byPlataforma = new Map();
   state.games.forEach(g => {
-    const key = g.console || 'Outros';
-    if (!byConsole.has(key)) byConsole.set(key, []);
-    byConsole.get(key).push(g);
+    const key = getPlataformaNome(g) || 'Outros';
+    if (!byPlataforma.has(key)) byPlataforma.set(key, []);
+    byPlataforma.get(key).push(g);
   });
 
   const ordem = ['SNES', 'NES', 'Mega Drive', 'Master System', 'Game Boy', 'Game Boy Color', 'Atari 2600'];
-  const keys  = [...byConsole.keys()].sort((a, b) => {
+  const keys  = [...byPlataforma.keys()].sort((a, b) => {
     const ia = ordem.indexOf(a); const ib = ordem.indexOf(b);
     return (ia === -1 ? 99 : ia) - (ib === -1 ? 99 : ib);
   });
 
   keys.forEach(k => {
-    const list = byConsole.get(k);
-    if (list.length) dom.rowsContainer.appendChild(buildRow(`Clássicos do ${k}`, list, `console-${slugify(k)}`));
+    const list = byPlataforma.get(k);
+    if (list.length) dom.rowsContainer.appendChild(buildRow(`Clássicos do ${k}`, list, `plataforma-${slugify(k)}`));
   });
 
   const byGenre = new Map();
@@ -310,8 +322,11 @@ function doSearch(term) {
 
   const results = state.games.filter(g => {
     const haystack = [
-      g.titulo, g.console, g.desenvolvedora,
-      ...(g.genero || []), ...(g.tags || [])
+      g.titulo,
+      getPlataformaNome(g),
+      getCriadorNome(g),
+      ...(g.genero || []),
+      ...(g.tags || [])
     ].map(normalize).join(' ');
     return haystack.includes(q);
   });
@@ -358,16 +373,16 @@ function applyFilter(filter) {
   }
 
   if (filter === 'console') {
-    const byConsole = new Map();
+    const byPlataforma = new Map();
     state.games.forEach(g => {
-      const k = g.console || 'Outros';
-      if (!byConsole.has(k)) byConsole.set(k, []);
-      byConsole.get(k).push(g);
+      const k = getPlataformaNome(g) || 'Outros';
+      if (!byPlataforma.has(k)) byPlataforma.set(k, []);
+      byPlataforma.get(k).push(g);
     });
     dom.emptyState.classList.add('hidden');
     dom.rowsContainer.classList.remove('hidden');
-    [...byConsole.entries()].forEach(([k, list]) => {
-      dom.rowsContainer.appendChild(buildRow(k, list, `console-${slugify(k)}`));
+    [...byPlataforma.entries()].forEach(([k, list]) => {
+      dom.rowsContainer.appendChild(buildRow(k, list, `plataforma-${slugify(k)}`));
     });
     return;
   }
@@ -395,7 +410,7 @@ function openDetail(gameId) {
   };
 
   dom.detailTitle.textContent = game.titulo || '';
-  dom.detailBadge.textContent = game.console || '';
+  dom.detailBadge.textContent = getPlataformaNome(game);
 
   const metaParts = [];
   if (game.ano) metaParts.push(game.ano);
@@ -407,8 +422,8 @@ function openDetail(gameId) {
 
   dom.detailFicha.innerHTML = '';
   const fichaData = [
-    ['Console',        game.console],
-    ['Desenvolvedora', game.desenvolvedora],
+    ['Console',        getPlataformaNome(game)],
+    ['Desenvolvedora', getCriadorNome(game)],
     ['Ano',            game.ano],
     ['Gênero',         (game.genero || []).join(', ')],
     ['Jogadores',      game.jogadores],
@@ -550,7 +565,7 @@ function bindEvents() {
 function loadGames() {
   const data = window.JOGOS;
   if (!Array.isArray(data)) throw new Error('window.JOGOS não encontrado. Verifique data/jogos.js.');
-  return data;
+  return data.filter(g => g.is_published !== false);
 }
 
 function init() {
