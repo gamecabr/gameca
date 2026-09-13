@@ -151,5 +151,5 @@ window.JOGOS = [
     "tags": ["ação", "arcade", "homebrew", "gameboy", "assembly"],
     "link_oficial": "https://teamempanadilla.itch.io/simpletanks",
     "destaque": true
-  },
+  }
 ];
