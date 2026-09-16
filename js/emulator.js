@@ -1,6 +1,5 @@
 /**
  * emulator.js — GAMECA
- * Ponte de gamepad via simulateInput (RetroArch API) com fallback de teclado.
  */
 
 ;(function(){
