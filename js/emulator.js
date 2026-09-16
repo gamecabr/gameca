@@ -22,7 +22,9 @@ const CORE_MAP = {
   'genesis':     'segaMD',
   'sms':         'sms',
   'mastersystem':'sms',
-  'gamegear':    'segaGG'
+  'gamegear':    'segaGG',
+  'c64':         'vice_x64',
+  'commodore64': 'vice_x64'
 };
 
 const EJS_GLOBALS = [
@@ -34,44 +36,18 @@ const EJS_GLOBALS = [
   'EJS_emulator', 'EJS_DEBUG_XX'
 ];
 
-/* ============================================================
-   GAMEPAD BRIDGE
-   Converte botões do gamepad em chamadas internas do EmulatorJS.
-   ============================================================ */
-
-// Índice do botão do gamepad → botão do RetroArch (padrão)
-// RetroArch: 0=B, 1=Y, 2=Select, 3=Start, 4=Up, 5=Down, 6=Left, 7=Right, 8=A, 9=X, 10=L, 11=R
 const PAD_TO_RETRO = {
-  0:  0,   // botão 0 (baixo)      → RetroArch B
-  1:  8,   // botão 1 (direita)    → RetroArch A
-  2:  1,   // botão 2 (esquerda)   → RetroArch Y
-  3:  9,   // botão 3 (topo)       → RetroArch X
-  4:  10,  // shoulder esquerdo    → L
-  5:  11,  // shoulder direito     → R
-  6:  12,  // trigger esquerdo     → L2
-  7:  13,  // trigger direito      → R2
-  8:  2,   // Select
-  9:  3,   // Start
-  12: 4,   // D-pad cima
-  13: 5,   // D-pad baixo
-  14: 6,   // D-pad esquerda
-  15: 7    // D-pad direita
+  0:  0, 1:  8, 2:  1, 3:  9,
+  4:  10, 5:  11, 6:  12, 7:  13,
+  8:  2, 9:  3,
+  12: 4, 13: 5, 14: 6, 15: 7
 };
 
-// Fallback: botão RetroArch → tecla (para navegadores onde simulateInput não existe)
 const RETRO_TO_KEY = {
-  0:  'z',
-  8:  'x',
-  1:  's',
-  9:  'a',
-  2:  'v',
-  3:  'Enter',
-  4:  'ArrowUp',
-  5:  'ArrowDown',
-  6:  'ArrowLeft',
-  7:  'ArrowRight',
-  10: 'q',
-  11: 'e'
+  0:  'z', 8:  'x', 1:  's', 9:  'a',
+  2:  'v', 3:  'Enter',
+  4:  'ArrowUp', 5:  'ArrowDown', 6:  'ArrowLeft', 7:  'ArrowRight',
+  10: 'q', 11: 'e'
 };
 
 const KEY_CODES = {
@@ -91,7 +67,6 @@ const _padState = {};
 let _gamepadRAF = null;
 let _debugMode = false;
 
-// Ativa debug via URL: ?gpdebug=1
 try {
   _debugMode = new URLSearchParams(location.search).has('gpdebug');
 } catch {}
@@ -121,16 +96,10 @@ function emitKey(type, key) {
   if (canvas) canvas.dispatchEvent(ev);
 }
 
-/**
- * Envia input para o emulador.
- * Tenta 1: gameManager.simulateInput (RetroArch API nativa)
- * Tenta 2: dispara KeyboardEvent
- */
 function sendInput(retroButton, pressed) {
   const gm = window.EJS_emulator?.gameManager;
   let sent = false;
 
-  // Tentativa 1: simulateInput (rota preferida)
   if (gm && typeof gm.simulateInput === 'function') {
     try {
       gm.simulateInput(0, retroButton, pressed ? 1 : 0);
@@ -141,7 +110,6 @@ function sendInput(retroButton, pressed) {
     }
   }
 
-  // Tentativa 2: fallback de teclado (sempre roda, redundante mas garante)
   const key = RETRO_TO_KEY[retroButton];
   if (key) {
     emitKey(pressed ? 'keydown' : 'keyup', key);
@@ -176,7 +144,6 @@ function pollGamepad() {
       }
     }
 
-    // Analógico esquerdo → D-pad (para quem prefere o stick)
     const ax = pad.axes[0] || 0;
     const ay = pad.axes[1] || 0;
     const dirs = {
@@ -198,13 +165,9 @@ function pollGamepad() {
 
 function startGamepadBridge() {
   if (_gamepadRAF) return;
-
   const gm = window.EJS_emulator?.gameManager;
-  console.info('[gamepad] bridge ativo. simulateInput disponível?',
-    typeof gm?.simulateInput === 'function');
-
-  if (_debugMode) console.info('[gamepad] modo debug ativo — aperte botões pra ver os índices');
-
+  console.info('[gamepad] bridge ativo. simulateInput disponível?', typeof gm?.simulateInput === 'function');
+  if (_debugMode) console.info('[gamepad] modo debug ativo');
   _gamepadRAF = requestAnimationFrame(pollGamepad);
 }
 
@@ -212,10 +175,6 @@ function stopGamepadBridge() {
   if (_gamepadRAF) { cancelAnimationFrame(_gamepadRAF); _gamepadRAF = null; }
   for (const k in _padState) delete _padState[k];
 }
-
-/* ============================================================
-   ESTADO INTERNO
-   ============================================================ */
 
 let _current      = null;
 let _dom          = null;
@@ -250,7 +209,7 @@ function getDom() {
 function openOverlay(game) {
   const d = getDom();
   d.title.textContent        = game.titulo || 'Jogo';
-  d.consoleBadge.textContent = game.console || game.core || '';
+  d.consoleBadge.textContent = game.plataforma?.nome || game.console || '';
   d.overlay.classList.remove('hidden');
   d.overlay.classList.add('flex');
   document.body.style.overflow = 'hidden';
@@ -325,15 +284,11 @@ function completeProgress() {
 }
 
 function cleanupEmulatorGlobals() {
-  document
-    .querySelectorAll('script[data-ejs-loader="true"]')
-    .forEach(s => s.remove());
-
+  document.querySelectorAll('script[data-ejs-loader="true"]').forEach(s => s.remove());
   for (const key of EJS_GLOBALS) {
-    try { delete window[key]; } catch { /* ignora */ }
+    try { delete window[key]; } catch {}
     if (key in window) window[key] = undefined;
   }
-
   const container = document.getElementById('game');
   if (container) container.innerHTML = '';
 }
@@ -381,9 +336,7 @@ function bootEmulator(game, core) {
       EJS_onReady: () => {
         try {
           const gm = window.EJS_emulator?.gameManager;
-          if (sram && gm?.loadSaveFile) {
-            gm.loadSaveFile(new Uint8Array(sram));
-          }
+          if (sram && gm?.loadSaveFile) gm.loadSaveFile(new Uint8Array(sram));
         } catch (e) {
           console.warn('[emulator] Falha ao restaurar SRAM:', e);
         }
@@ -393,7 +346,7 @@ function bootEmulator(game, core) {
         try {
           const gm = window.EJS_emulator?.gameManager;
           if (sram && gm?.loadSaveFile) gm.loadSaveFile(new Uint8Array(sram));
-        } catch { /* já tratado */ }
+        } catch {}
 
         if (_current) {
           _current.started = true;
@@ -414,9 +367,7 @@ function bootEmulator(game, core) {
     script.async = true;
     script.dataset.ejsLoader = 'true';
     script.onerror = () => {
-      done(reject, new Error(
-        'Não foi possível baixar o EmulatorJS do CDN. Verifique sua conexão.'
-      ));
+      done(reject, new Error('Não foi possível baixar o EmulatorJS do CDN. Verifique sua conexão.'));
     };
     document.head.appendChild(script);
   });
@@ -426,13 +377,10 @@ async function persistSave(game) {
   try {
     const gm = window.EJS_emulator?.gameManager;
     if (!gm?.getSaveFile) return;
-
     const sram = gm.getSaveFile();
     if (!sram || !sram.byteLength) return;
-
     await saves.put(game.id, sram, { consoleId: game.core });
     showSaveIndicator();
-
     requestPersistentStorage().catch(() => {});
   } catch (e) {
     console.warn('[emulator] Falha ao persistir SRAM:', e);
@@ -441,13 +389,12 @@ async function persistSave(game) {
 
 async function play(game) {
   if (!game || !game.id) throw new Error('play(): objeto de jogo inválido.');
-
   if (_current) await stop('switch');
 
   const core = CORE_MAP[game.core];
   if (!core) {
     openOverlay(game);
-    showError(`O console "${game.console}" (core: ${game.core}) não é suportado.`);
+    showError(`O console "${game.plataforma?.nome || game.console}" (core: ${game.core}) não é suportado.`);
     return;
   }
 
@@ -464,13 +411,7 @@ async function play(game) {
   });
   stats.registerPlay(game.id);
 
-  _current = {
-    game,
-    core,
-    sessionStart: 0,
-    cancelled:    false,
-    started:      false
-  };
+  _current = { game, core, sessionStart: 0, cancelled: false, started: false };
 
   openOverlay(game);
   showLoading(`Carregando ${game.titulo}…`);
@@ -480,10 +421,7 @@ async function play(game) {
   try {
     cleanupEmulatorGlobals();
     await bootEmulator(game, core);
-
-    if (_current?.cancelled) {
-      await stop('cancelled');
-    }
+    if (_current?.cancelled) await stop('cancelled');
   } catch (err) {
     console.error('[emulator] erro de boot:', err);
     showError(err?.message || 'Não foi possível iniciar o jogo.');
@@ -492,11 +430,9 @@ async function play(game) {
 
 async function stop(reason = 'user') {
   if (!_current) { hideOverlay(); return; }
-
   const { game, sessionStart, started } = _current;
 
   if (started) await persistSave(game);
-
   if (started && sessionStart) {
     const ms = Date.now() - sessionStart;
     recents.setSessionDuration(game.id, ms);
@@ -509,7 +445,7 @@ async function stop(reason = 'user') {
   hideOverlay();
 
   if (document.fullscreenElement) {
-    try { await document.exitFullscreen(); } catch { /* ignora */ }
+    try { await document.exitFullscreen(); } catch {}
   }
 
   events.emit('emulator:stopped', { gameId: game.id, reason });
@@ -526,11 +462,8 @@ async function toggleFullscreen() {
   const el = getDom().overlay;
   if (!el) return;
   try {
-    if (!document.fullscreenElement) {
-      await el.requestFullscreen?.();
-    } else {
-      await document.exitFullscreen?.();
-    }
+    if (!document.fullscreenElement) await el.requestFullscreen?.();
+    else await document.exitFullscreen?.();
   } catch (e) {
     console.warn('[emulator] Fullscreen falhou:', e);
   }
@@ -539,10 +472,10 @@ async function toggleFullscreen() {
 function bindGlobalEvents() {
   const d = getDom();
 
-  d.closeBtn     ?.addEventListener('click', () => stop('user'));
-  d.errorClose   ?.addEventListener('click', () => stop('error'));
+  d.closeBtn?.addEventListener('click', () => stop('user'));
+  d.errorClose?.addEventListener('click', () => stop('error'));
   d.fullscreenBtn?.addEventListener('click', toggleFullscreen);
-  d.restartBtn   ?.addEventListener('click', restart);
+  d.restartBtn?.addEventListener('click', restart);
 
   d.cancelBtn?.addEventListener('click', () => {
     if (_current) _current.cancelled = true;
@@ -550,18 +483,13 @@ function bindGlobalEvents() {
   });
 
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && _current && !document.fullscreenElement) {
-      stop('escape');
-    }
+    if (e.key === 'Escape' && _current && !document.fullscreenElement) stop('escape');
   });
 
   document.addEventListener('fullscreenchange', () => {
     const btn = getDom().fullscreenBtn;
     if (!btn) return;
-    btn.setAttribute(
-      'aria-label',
-      document.fullscreenElement ? 'Sair da tela cheia' : 'Tela cheia'
-    );
+    btn.setAttribute('aria-label', document.fullscreenElement ? 'Sair da tela cheia' : 'Tela cheia');
   });
 
   document.addEventListener('visibilitychange', () => {
@@ -575,12 +503,5 @@ function isPlaying()      { return !!_current?.started; }
 function getCurrentGame() { return _current?.game || null; }
 function getSupportedCores() { return Object.keys(CORE_MAP); }
 
-window.GREmulator = {
-  play,
-  stop,
-  restart,
-  isPlaying,
-  getCurrentGame,
-  getSupportedCores
-};
+window.GREmulator = { play, stop, restart, isPlaying, getCurrentGame, getSupportedCores };
 })();
