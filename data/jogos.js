@@ -28,7 +28,7 @@ window.JOGOS = [
     "distribution_status": "PLAY_HERE",
     "external_link": "",
     "is_published": true,
-    "is_featured": true
+    "is_featured": false
   },
   {
     "id": "cleaving-caliber-gold-gbc",
@@ -211,7 +211,7 @@ window.JOGOS = [
     "distribution_status": "PLAY_HERE",
     "external_link": "",
     "is_published": true,
-    "is_featured": true
+    "is_featured": false
   },
   {
     "id": "nintendash-gb",
@@ -273,7 +273,7 @@ window.JOGOS = [
     "distribution_status": "PLAY_HERE",
     "external_link": "",
     "is_published": true,
-    "is_featured": true
+    "is_featured": false
   },
   {
     "id": "empire-64-c64",
@@ -298,7 +298,7 @@ window.JOGOS = [
     "distribution_status": "PLAY_HERE",
     "external_link": "",
     "is_published": true,
-    "is_featured": false
+    "is_featured": true
   },
   {
     "id": "starfall-advance-gba",
@@ -323,7 +323,7 @@ window.JOGOS = [
     "distribution_status": "PLAY_HERE",
     "external_link": "",
     "is_published": true,
-    "is_featured": false
+    "is_featured": true
   },
   {
     "id": "mazes-of-zarboz-c64",
@@ -373,7 +373,7 @@ window.JOGOS = [
     "distribution_status": "PLAY_HERE",
     "external_link": "",
     "is_published": true,
-    "is_featured": false
+    "is_featured": true
   },
   {
     "id": "xo89-gba",
