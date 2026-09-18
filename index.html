@@ -84,36 +84,25 @@
   </a>
 
   <!-- ============================================================
-       SIDEBAR (Pinterest-style)
+       SIDEBAR
   ============================================================ -->
   <aside id="sidebar" class="sidebar" aria-label="Navegação principal">
 
-    <!-- Logo / Home -->
     <a href="#" id="sidebar-logo" class="sidebar-logo" aria-label="GAMECA — Início">
-      <img src="assets/logos/gameca-logo-04.svg"
-           alt="GAMECA"
-           class="sidebar-logo-img"
-           onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
-      <span class="sidebar-logo-fallback hidden">GR</span>
+      <img src="assets/logos/gameca-logo-04.svg" alt="GAMECA" class="sidebar-logo-img" />
+      <span class="sidebar-tooltip">GAMECA</span>
     </a>
 
-    <!-- Nav principal -->
     <nav class="sidebar-nav">
 
-      <button class="sidebar-item active"
-              data-action="home"
-              data-tooltip="Início"
-              aria-label="Início">
+      <button class="sidebar-item active" data-action="home" aria-label="Início">
         <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
           <path d="M8 5v14l11-7z"/>
         </svg>
         <span class="sidebar-tooltip">Início</span>
       </button>
 
-      <button class="sidebar-item"
-              data-action="explore"
-              data-tooltip="Explorar"
-              aria-label="Explorar">
+      <button class="sidebar-item" data-action="explore" aria-label="Explorar">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <circle cx="12" cy="12" r="10"/>
           <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>
@@ -121,20 +110,14 @@
         <span class="sidebar-tooltip">Explorar</span>
       </button>
 
-      <button class="sidebar-item"
-              data-action="library"
-              data-tooltip="Seus jogos"
-              aria-label="Seus jogos">
+      <button class="sidebar-item" data-action="library" aria-label="Seus jogos">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z"/>
         </svg>
         <span class="sidebar-tooltip">Seus jogos</span>
       </button>
 
-      <button class="sidebar-item"
-              data-action="updates"
-              data-tooltip="Atualizações"
-              aria-label="Atualizações">
+      <button class="sidebar-item" data-action="updates" aria-label="Atualizações">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/>
           <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>
@@ -143,10 +126,7 @@
         <span class="sidebar-badge hidden"></span>
       </button>
 
-      <button class="sidebar-item"
-              data-action="messages"
-              data-tooltip="Mensagens"
-              aria-label="Mensagens">
+      <button class="sidebar-item" data-action="messages" aria-label="Mensagens">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
         </svg>
@@ -155,12 +135,8 @@
 
     </nav>
 
-    <!-- Rodapé da sidebar -->
     <div class="sidebar-footer">
-      <button class="sidebar-item"
-              data-action="settings"
-              data-tooltip="Configurações"
-              aria-label="Configurações">
+      <button class="sidebar-item" data-action="settings" aria-label="Configurações">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <circle cx="12" cy="12" r="3"/>
           <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
@@ -172,11 +148,10 @@
   </aside>
 
   <!-- ============================================================
-       CONTEÚDO
+       CONTEÚDO PRINCIPAL
   ============================================================ -->
   <div id="app-content" class="app-content">
 
-    <!-- HEADER -->
     <header id="app-header" class="app-header">
       <div class="header-rule"></div>
 
@@ -432,7 +407,6 @@
           </p>
         </div>
 
-        <!-- AVISO LEGAL -->
         <div class="legal-notice">
           <div class="legal-notice-icon">
             <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
@@ -443,12 +417,7 @@
           <div class="legal-notice-body">
             <p class="legal-notice-title" data-i18n="legal.title">Sobre o conteúdo</p>
             <p class="legal-notice-text" data-i18n="legal.text">
-              Todos os jogos exibidos na GAMECA são homebrews e produções independentes obtidos por
-              distribuição pública aberta no itch.io e em repositórios oficiais dos criadores.
-              A GAMECA não reivindica autoria, propriedade ou direitos sobre qualquer ROM. Cada jogo
-              mantém um link direto para a página original do desenvolvedor. Se você é o criador de
-              algum título listado e deseja remoção, correção de créditos ou atualização de links,
-              escreva para <a href="mailto:gameca.oficial@gmail.com">gameca.oficial@gmail.com</a> — atendemos em até 24h.
+              Todos os jogos exibidos na GAMECA são homebrews e produções independentes obtidos por distribuição pública aberta no itch.io e em repositórios oficiais dos criadores. A GAMECA não reivindica autoria, propriedade ou direitos sobre qualquer ROM. Cada jogo mantém um link direto para a página original do desenvolvedor. Se você é o criador de algum título listado e deseja remoção, correção de créditos ou atualização de links, escreva para gameca.oficial@gmail.com — atendemos em até 24h.
             </p>
           </div>
         </div>
