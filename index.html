@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>GAMECA — O arquivo vivo dos clássicos</title>
-  <meta name="description" content="O arquivo vivo dos clássicos. Jogue clássicos do Atari, NES, SNES, Mega Drive, Master System, Game Boy e Commodore 64 direto no navegador." />
+  <meta name="description" content="Curadoria de jogos homebrew e indies para consoles clássicos. Jogue direto no navegador." />
 
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-355PNVZWK5"></script>
   <script>
@@ -19,7 +19,7 @@
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://gameca.com.br/" />
   <meta property="og:title" content="GAMECA — O arquivo vivo dos clássicos" />
-  <meta property="og:description" content="Jogue clássicos direto no navegador." />
+  <meta property="og:description" content="Curadoria de jogos homebrew e indies para consoles clássicos." />
   <meta property="og:image" content="https://gameca.com.br/assets/og-image.jpg" />
 
   <meta name="twitter:card" content="summary_large_image" />
@@ -74,7 +74,7 @@
     };
   </script>
 
-  <link rel="stylesheet" href="css/styles.css?v=7" />
+  <link rel="stylesheet" href="css/styles.css?v=8" />
 </head>
 
 <body class="bg-ink-800 text-cream font-sans antialiased overflow-x-hidden">
@@ -84,302 +84,391 @@
   </a>
 
   <!-- ============================================================
-       HEADER
+       SIDEBAR (Pinterest-style)
   ============================================================ -->
-  <header id="app-header" class="fixed top-0 inset-x-0 z-40 transition-all duration-300">
-    <div class="header-rule"></div>
+  <aside id="sidebar" class="sidebar" aria-label="Navegação principal">
 
-    <div class="flex items-center gap-3 md:gap-8 px-4 md:px-10 h-16 md:h-[72px]">
+    <!-- Logo / Home -->
+    <a href="#" id="sidebar-logo" class="sidebar-logo" aria-label="GAMECA — Início">
+      <img src="assets/logos/gameca-logo-04.svg"
+           alt="GAMECA"
+           class="sidebar-logo-img"
+           onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
+      <span class="sidebar-logo-fallback hidden">GR</span>
+    </a>
 
-      <a href="#" id="logo-link" class="shrink-0 flex items-center" aria-label="GAMECA">
-        <img src="assets/logos/gameca-logo-01.svg"
-             alt="GAMECA"
-             class="h-7 md:h-9 w-auto"
-             onerror="this.style.display='none';this.nextElementSibling.style.display='block';" />
-        <span class="font-display text-cream text-xl md:text-2xl tracking-tight hidden">GAMECA</span>
-      </a>
+    <!-- Nav principal -->
+    <nav class="sidebar-nav">
 
-      <nav id="main-nav" class="hidden lg:flex items-center gap-1" aria-label="Navigation">
-        <button class="nav-link active" data-filter="todos" data-i18n="nav.play">Jogar</button>
-        <button class="nav-link" data-filter="console" data-i18n="nav.discover">Descobrir</button>
-        <button class="nav-link" data-filter="Ação" data-i18n="nav.creators">Criadores</button>
-        <button class="nav-link" data-filter="RPG" data-i18n="nav.hardware">Hardware</button>
-        <button class="nav-link" data-filter="favoritos" data-i18n="nav.library">Biblioteca</button>
-      </nav>
-
-      <select id="mobile-category"
-              class="lg:hidden bg-ink-700 border border-ink-500 rounded-sm px-2 py-1 text-xs font-mono uppercase tracking-wider text-cream"
-              aria-label="Navigation">
-        <option value="todos" data-i18n="nav.play">Jogar</option>
-        <option value="console" data-i18n="nav.discover">Descobrir</option>
-        <option value="Ação" data-i18n="nav.creators">Criadores</option>
-        <option value="RPG" data-i18n="nav.hardware">Hardware</option>
-        <option value="favoritos" data-i18n="nav.library">Biblioteca</option>
-      </select>
-
-      <div class="flex-1"></div>
-
-      <select id="lang-switcher"
-              class="bg-ink-700 border border-ink-500 rounded-sm px-2 py-1.5 text-xs font-mono uppercase tracking-wider text-cream hover:border-rust transition"
-              aria-label="Language">
-        <option value="pt">PT</option>
-        <option value="en">EN</option>
-        <option value="hi">HI</option>
-      </select>
-
-      <div id="search-wrapper"
-           class="flex items-center gap-2 bg-ink-700/60 border border-ink-500 rounded-sm
-                  px-3 py-2 transition-all duration-300 w-10 md:w-56
-                  focus-within:w-56 md:focus-within:w-72 focus-within:border-rust">
-        <svg class="w-4 h-4 shrink-0 text-cream-muted" fill="none" stroke="currentColor" stroke-width="2"
-             viewBox="0 0 24 24" aria-hidden="true">
-          <circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" stroke-linecap="round" />
+      <button class="sidebar-item active"
+              data-action="home"
+              data-tooltip="Início"
+              aria-label="Início">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M8 5v14l11-7z"/>
         </svg>
-        <input id="search-input" type="search"
-               data-i18n="search.placeholder"
-               placeholder="Buscar jogos, criadores..."
-               autocomplete="off"
-               class="bg-transparent outline-none text-sm w-full placeholder:text-cream-dim" />
-        <button id="search-clear" class="hidden text-cream-muted hover:text-cream text-lg leading-none" data-i18n-attr="aria-label" data-i18n="search.clear" aria-label="Limpar busca">&times;</button>
-      </div>
+        <span class="sidebar-tooltip">Início</span>
+      </button>
 
-      <span id="offline-badge"
-            class="hidden items-center gap-1.5 text-[10px] font-mono font-semibold text-rust
-                   border border-rust/50 rounded-full px-2 py-0.5 tracking-widest uppercase"
-            title="Offline">
-        <span class="w-1.5 h-1.5 rounded-full bg-rust"></span>
-        <span data-i18n="offline">Offline</span>
-      </span>
-    </div>
-  </header>
+      <button class="sidebar-item"
+              data-action="explore"
+              data-tooltip="Explorar"
+              aria-label="Explorar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="10"/>
+          <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>
+        </svg>
+        <span class="sidebar-tooltip">Explorar</span>
+      </button>
 
-  <!-- ============================================================
-       HERO
-  ============================================================ -->
-  <section id="hero" class="relative w-full h-[82vh] min-h-[560px] max-h-[820px] flex items-end overflow-hidden">
+      <button class="sidebar-item"
+              data-action="library"
+              data-tooltip="Seus jogos"
+              aria-label="Seus jogos">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z"/>
+        </svg>
+        <span class="sidebar-tooltip">Seus jogos</span>
+      </button>
 
-    <img id="hero-backdrop"
-         src=""
-         alt=""
-         class="absolute inset-0 w-full h-full object-cover scale-105 transition-opacity duration-700 opacity-0"
-         style="image-rendering: pixelated;" />
+      <button class="sidebar-item"
+              data-action="updates"
+              data-tooltip="Atualizações"
+              aria-label="Atualizações">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/>
+          <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>
+        </svg>
+        <span class="sidebar-tooltip">Atualizações</span>
+        <span class="sidebar-badge hidden"></span>
+      </button>
 
-    <div class="absolute inset-0 bg-gradient-to-t from-ink-800 via-ink-800/50 to-transparent"></div>
-    <div class="absolute inset-0 bg-gradient-to-r from-ink-900/70 via-ink-900/25 to-transparent"></div>
+      <button class="sidebar-item"
+              data-action="messages"
+              data-tooltip="Mensagens"
+              aria-label="Mensagens">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+        </svg>
+        <span class="sidebar-tooltip">Mensagens</span>
+      </button>
 
-    <div class="absolute inset-0 pointer-events-none"
-         style="background: radial-gradient(ellipse 55% 75% at 0% 100%, rgba(8,7,6,.65) 0%, transparent 70%);"></div>
+    </nav>
 
-    <div class="hero-grain" aria-hidden="true"></div>
-
-    <div class="relative z-30 w-full px-6 md:px-12 pb-14 md:pb-20 animate-slide-up">
-      <div class="max-w-2xl">
-
-        <div class="flex items-center gap-3 mb-5">
-          <span id="hero-badge"
-                class="font-mono text-[10px] md:text-[11px] font-bold tracking-[0.25em] uppercase
-                       bg-rust text-cream rounded-sm px-2.5 py-1">—</span>
-          <span class="hidden md:block h-px flex-1 max-w-[80px] bg-rust/50"></span>
-          <span class="hidden md:block font-mono text-[10px] tracking-[0.25em] text-rust uppercase font-semibold" data-i18n="hero.badge">Em destaque</span>
-        </div>
-
-        <h1 id="hero-title"
-            class="font-display text-cream text-5xl md:text-7xl lg:text-8xl leading-[0.9] mb-5 uppercase tracking-tight drop-shadow-[0_4px_20px_rgba(0,0,0,.95)]">—</h1>
-
-        <div id="hero-meta"
-             class="font-mono text-[11px] md:text-xs uppercase tracking-[0.2em] text-cream-soft mb-5 flex flex-wrap items-center gap-x-3 gap-y-1 drop-shadow-[0_2px_8px_rgba(0,0,0,.95)]">—</div>
-
-        <p id="hero-resumo"
-           class="text-sm md:text-lg leading-relaxed text-cream-soft mb-8 line-clamp-3 max-w-xl drop-shadow-[0_2px_8px_rgba(0,0,0,.95)]">—</p>
-
-        <div class="flex flex-wrap gap-3">
-          <button id="hero-play"
-                  class="inline-flex items-center gap-2.5 bg-rust text-cream font-bold text-sm md:text-base uppercase tracking-wider
-                         px-7 py-3.5 rounded-sm hover:bg-rust-light transition active:scale-[0.98] shadow-[0_10px_30px_rgba(0,0,0,.5)]">
-            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
-            <span data-i18n="hero.play">Jogar agora</span>
-          </button>
-
-          <button id="hero-info"
-                  class="inline-flex items-center gap-2 border border-cream/30 text-cream
-                         font-bold text-sm md:text-base uppercase tracking-wider px-7 py-3.5 rounded-sm
-                         hover:bg-cream/10 hover:border-cream/60 transition active:scale-[0.98] backdrop-blur-sm">
-            <span data-i18n="hero.info">Conheça o jogo</span>
-          </button>
-        </div>
-
-      </div>
+    <!-- Rodapé da sidebar -->
+    <div class="sidebar-footer">
+      <button class="sidebar-item"
+              data-action="settings"
+              data-tooltip="Configurações"
+              aria-label="Configurações">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+        </svg>
+        <span class="sidebar-tooltip">Configurações</span>
+      </button>
     </div>
 
-    <div id="hero-dots" class="absolute bottom-8 right-6 md:right-12 z-30 flex gap-1.5"></div>
-
-    <div class="absolute bottom-0 inset-x-0 h-20 bg-gradient-to-t from-ink-800 to-transparent pointer-events-none z-20"></div>
-
-  </section>
+  </aside>
 
   <!-- ============================================================
-       MAIN
+       CONTEÚDO
   ============================================================ -->
-  <main id="main-content" class="relative z-0 pt-4 md:pt-6 pb-0 space-y-8 md:space-y-12">
+  <div id="app-content" class="app-content">
 
-    <!-- ANÚNCIO: topo -->
-    <div id="ad-slot-top" class="ad-slot ad-slot-horizontal mx-4 md:mx-10"></div>
+    <!-- HEADER -->
+    <header id="app-header" class="app-header">
+      <div class="header-rule"></div>
 
-    <!-- Continue de onde parou (carrossel horizontal, oculto por padrão) -->
-    <section id="row-continue" class="hidden">
-      <h2 class="row-title" data-i18n="row.continue">Continuar jogando</h2>
-      <div class="row-track" data-row="continue"></div>
+      <div class="flex items-center gap-3 md:gap-6 px-4 md:px-8 h-16 md:h-[68px]">
+
+        <nav id="main-nav" class="hidden lg:flex items-center gap-1" aria-label="Categorias">
+          <button class="nav-link active" data-filter="todos" data-i18n="nav.play">Jogar</button>
+          <button class="nav-link" data-filter="console" data-i18n="nav.discover">Descobrir</button>
+          <button class="nav-link" data-filter="favoritos" data-i18n="nav.library">Biblioteca</button>
+        </nav>
+
+        <select id="mobile-category"
+                class="lg:hidden bg-ink-700 border border-ink-500 rounded-sm px-2 py-1 text-xs font-mono uppercase tracking-wider text-cream"
+                aria-label="Categorias">
+          <option value="todos" data-i18n="nav.play">Jogar</option>
+          <option value="console" data-i18n="nav.discover">Descobrir</option>
+          <option value="favoritos" data-i18n="nav.library">Biblioteca</option>
+        </select>
+
+        <div class="flex-1"></div>
+
+        <div id="search-wrapper"
+             class="flex items-center gap-2 bg-ink-700/60 border border-ink-500 rounded-sm
+                    px-3 py-2 transition-all duration-300 w-10 md:w-56
+                    focus-within:w-56 md:focus-within:w-72 focus-within:border-rust">
+          <svg class="w-4 h-4 shrink-0 text-cream-muted" fill="none" stroke="currentColor" stroke-width="2"
+               viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" stroke-linecap="round" />
+          </svg>
+          <input id="search-input" type="search"
+                 data-i18n="search.placeholder"
+                 placeholder="Buscar jogos, criadores..."
+                 autocomplete="off"
+                 class="bg-transparent outline-none text-sm w-full placeholder:text-cream-dim" />
+          <button id="search-clear" class="hidden text-cream-muted hover:text-cream text-lg leading-none" data-i18n-attr="aria-label" data-i18n="search.clear" aria-label="Limpar busca">&times;</button>
+        </div>
+
+        <select id="lang-switcher"
+                class="bg-ink-700 border border-ink-500 rounded-sm px-2 py-1.5 text-xs font-mono uppercase tracking-wider text-cream hover:border-rust transition"
+                aria-label="Language">
+          <option value="pt">PT</option>
+          <option value="en">EN</option>
+          <option value="hi">HI</option>
+        </select>
+
+        <span id="offline-badge"
+              class="hidden items-center gap-1.5 text-[10px] font-mono font-semibold text-rust
+                     border border-rust/50 rounded-full px-2 py-0.5 tracking-widest uppercase"
+              title="Offline">
+          <span class="w-1.5 h-1.5 rounded-full bg-rust"></span>
+          <span data-i18n="offline">Offline</span>
+        </span>
+      </div>
+    </header>
+
+    <!-- HERO -->
+    <section id="hero" class="relative w-full h-[78vh] min-h-[520px] max-h-[780px] flex items-end overflow-hidden">
+
+      <img id="hero-backdrop"
+           src=""
+           alt=""
+           class="absolute inset-0 w-full h-full object-cover scale-105 transition-opacity duration-700 opacity-0"
+           style="image-rendering: pixelated;" />
+
+      <div class="absolute inset-0 bg-gradient-to-t from-ink-800 via-ink-800/60 to-transparent"></div>
+      <div class="absolute inset-0 bg-gradient-to-r from-ink-900/80 via-ink-900/30 to-transparent"></div>
+
+      <div class="absolute inset-0 pointer-events-none"
+           style="background: radial-gradient(ellipse 55% 75% at 0% 100%, rgba(8,7,6,.7) 0%, transparent 70%);"></div>
+
+      <div class="hero-grain" aria-hidden="true"></div>
+
+      <div class="relative z-30 w-full px-6 md:px-10 pb-12 md:pb-16 animate-slide-up">
+        <div class="max-w-2xl">
+
+          <div class="flex items-center gap-3 mb-5">
+            <span id="hero-badge"
+                  class="font-mono text-[10px] md:text-[11px] font-bold tracking-[0.25em] uppercase
+                         bg-rust text-cream rounded-sm px-2.5 py-1">—</span>
+            <span class="hidden md:block h-px flex-1 max-w-[80px] bg-rust/50"></span>
+            <span class="hidden md:block font-mono text-[10px] tracking-[0.25em] text-rust uppercase font-semibold" data-i18n="hero.badge">Em destaque</span>
+          </div>
+
+          <h1 id="hero-title"
+              class="font-display text-cream text-5xl md:text-6xl lg:text-7xl leading-[0.9] mb-5 uppercase tracking-tight drop-shadow-[0_4px_20px_rgba(0,0,0,.95)]">—</h1>
+
+          <div id="hero-meta"
+               class="font-mono text-[11px] md:text-xs uppercase tracking-[0.2em] text-cream-soft mb-5 flex flex-wrap items-center gap-x-3 gap-y-1 drop-shadow-[0_2px_8px_rgba(0,0,0,.95)]">—</div>
+
+          <p id="hero-resumo"
+             class="text-sm md:text-base leading-relaxed text-cream-soft mb-7 line-clamp-3 max-w-xl drop-shadow-[0_2px_8px_rgba(0,0,0,.95)]">—</p>
+
+          <div class="flex flex-wrap gap-3">
+            <button id="hero-play"
+                    class="inline-flex items-center gap-2.5 bg-rust text-cream font-bold text-sm md:text-base uppercase tracking-wider
+                           px-7 py-3.5 rounded-sm hover:bg-rust-light transition active:scale-[0.98] shadow-[0_10px_30px_rgba(0,0,0,.5)]">
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+              <span data-i18n="hero.play">Jogar agora</span>
+            </button>
+
+            <button id="hero-info"
+                    class="inline-flex items-center gap-2 border border-cream/30 text-cream
+                           font-bold text-sm md:text-base uppercase tracking-wider px-7 py-3.5 rounded-sm
+                           hover:bg-cream/10 hover:border-cream/60 transition active:scale-[0.98] backdrop-blur-sm">
+              <span data-i18n="hero.info">Conheça o jogo</span>
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+      <div id="hero-dots" class="absolute bottom-8 right-6 md:right-10 z-30 flex gap-1.5"></div>
+
+      <div class="absolute bottom-0 inset-x-0 h-20 bg-gradient-to-t from-ink-800 to-transparent pointer-events-none z-20"></div>
+
     </section>
 
-    <!-- Resultados de busca (carrossel horizontal, oculto por padrão) -->
-    <section id="row-search" class="hidden">
-      <h2 class="row-title"><span data-i18n="row.results">Resultados para</span> <span id="search-term" class="text-rust"></span></h2>
-      <div class="row-track" data-row="search"></div>
-    </section>
+    <!-- MAIN -->
+    <main id="main-content" class="relative z-0 pt-6 md:pt-8 pb-0 space-y-8 md:space-y-10">
 
-    <!-- ============================================================
-         BARRA DE FILTROS
-    ============================================================ -->
-    <div id="filter-bar" class="px-4 md:px-10">
+      <div id="ad-slot-top" class="ad-slot ad-slot-horizontal mx-4 md:mx-8"></div>
 
-      <div class="flex flex-wrap items-end gap-3 md:gap-4 mb-6">
+      <section id="row-continue" class="hidden">
+        <h2 class="row-title" data-i18n="row.continue">Continuar jogando</h2>
+        <div class="row-track" data-row="continue"></div>
+      </section>
 
-        <!-- Console -->
-        <div class="flex flex-col gap-1.5 flex-1 min-w-[140px] md:max-w-[220px]">
-          <label for="filter-console"
-                 class="font-mono text-[9px] uppercase tracking-[0.25em] text-cream-dim pl-0.5">
-            Console
-          </label>
-          <div class="relative">
-            <select id="filter-console"
-                    class="filter-select">
-              <option value="">Todos</option>
-            </select>
-            <svg class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-cream-muted" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true">
-              <path d="m6 9 6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
+      <section id="row-search" class="hidden">
+        <h2 class="row-title"><span data-i18n="row.results">Resultados para</span> <span id="search-term" class="text-rust"></span></h2>
+        <div class="row-track" data-row="search"></div>
+      </section>
+
+      <!-- FILTROS -->
+      <div id="filter-bar" class="px-4 md:px-8">
+
+        <div class="flex flex-wrap items-end gap-3 md:gap-4 mb-6">
+
+          <div class="filter-group">
+            <label for="filter-console" class="filter-label">
+              <svg class="filter-label-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+                <rect x="3" y="6" width="18" height="12" rx="2"/>
+                <path d="M7 12h2M8 11v2M15 11h.01M17 13h.01"/>
+              </svg>
+              <span data-i18n="filter.console">Console</span>
+            </label>
+            <div class="filter-select-wrapper">
+              <select id="filter-console" class="filter-select">
+                <option value="" data-i18n="filter.all">Todos</option>
+              </select>
+              <svg class="filter-chevron" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="m6 9 6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </div>
+
+          <div class="filter-group">
+            <label for="filter-genre" class="filter-label">
+              <svg class="filter-label-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M3 6h18M3 12h12M3 18h6" stroke-linecap="round"/>
+              </svg>
+              <span data-i18n="filter.genre">Gênero</span>
+            </label>
+            <div class="filter-select-wrapper">
+              <select id="filter-genre" class="filter-select">
+                <option value="" data-i18n="filter.all">Todos</option>
+              </select>
+              <svg class="filter-chevron" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="m6 9 6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </div>
+
+          <div class="filter-group">
+            <label for="filter-sort" class="filter-label">
+              <svg class="filter-label-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M3 6h13M3 12h9M3 18h5M17 10l4 4-4 4M21 14H11" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <span data-i18n="filter.sort">Ordenar</span>
+            </label>
+            <div class="filter-select-wrapper">
+              <select id="filter-sort" class="filter-select">
+                <option value="az" data-i18n="filter.az">A – Z</option>
+                <option value="za" data-i18n="filter.za">Z – A</option>
+                <option value="featured" data-i18n="filter.featured">Destaques primeiro</option>
+                <option value="recent" data-i18n="filter.recent">Lançamentos recentes</option>
+              </select>
+              <svg class="filter-chevron" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="m6 9 6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-3 ml-auto pt-1">
+            <span id="filter-count"
+                  class="font-mono text-[10px] uppercase tracking-widest text-cream-muted whitespace-nowrap">
+            </span>
+            <button id="filter-clear"
+                    class="hidden font-mono text-[10px] uppercase tracking-widest text-rust hover:text-rust-light
+                           underline underline-offset-4 transition whitespace-nowrap"
+                    data-i18n="filter.clear">
+              Limpar
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- GRADE -->
+      <div id="grid-container"
+           class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6
+                  gap-3 md:gap-4 px-4 md:px-8">
+
+        <div id="loading-rows" class="col-span-full">
+          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 md:gap-4">
+            <div class="aspect-[3/4] bg-ink-700 rounded-sm animate-pulse"></div>
+            <div class="aspect-[3/4] bg-ink-700 rounded-sm animate-pulse"></div>
+            <div class="aspect-[3/4] bg-ink-700 rounded-sm animate-pulse"></div>
+            <div class="aspect-[3/4] bg-ink-700 rounded-sm animate-pulse"></div>
+            <div class="aspect-[3/4] bg-ink-700 rounded-sm animate-pulse"></div>
+            <div class="aspect-[3/4] bg-ink-700 rounded-sm animate-pulse"></div>
+            <div class="aspect-[3/4] bg-ink-700 rounded-sm animate-pulse"></div>
+            <div class="aspect-[3/4] bg-ink-700 rounded-sm animate-pulse"></div>
+            <div class="aspect-[3/4] bg-ink-700 rounded-sm animate-pulse"></div>
+            <div class="aspect-[3/4] bg-ink-700 rounded-sm animate-pulse"></div>
+            <div class="aspect-[3/4] bg-ink-700 rounded-sm animate-pulse"></div>
+            <div class="aspect-[3/4] bg-ink-700 rounded-sm animate-pulse"></div>
           </div>
         </div>
 
-        <!-- Gênero -->
-        <div class="flex flex-col gap-1.5 flex-1 min-w-[140px] md:max-w-[220px]">
-          <label for="filter-genre"
-                 class="font-mono text-[9px] uppercase tracking-[0.25em] text-cream-dim pl-0.5">
-            Gênero
-          </label>
-          <div class="relative">
-            <select id="filter-genre" class="filter-select">
-              <option value="">Todos</option>
-            </select>
-            <svg class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-cream-muted" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true">
-              <path d="m6 9 6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/>
+      </div>
+
+      <div id="empty-state" class="hidden text-center py-24 px-6">
+        <p class="font-display text-6xl text-ink-500 mb-4">∅</p>
+        <h3 class="font-display text-3xl text-cream mb-2 uppercase tracking-tight" data-i18n="empty.title">Nada por aqui</h3>
+        <p class="text-cream-muted text-sm" data-i18n="empty.text">Tente outra busca ou explore outra categoria.</p>
+      </div>
+
+      <div id="ad-slot-bottom" class="ad-slot ad-slot-horizontal mx-4 md:mx-8 mt-10 md:mt-14"></div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="border-t border-ink-600 bg-ink-900 px-4 md:px-8 py-14 mt-14">
+      <div class="max-w-5xl mx-auto">
+
+        <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-8">
+          <img src="assets/logos/gameca-logo-03.svg"
+               alt="GAMECA"
+               class="h-20 md:h-24 w-auto"
+               onerror="this.style.display='none';" />
+          <p class="font-mono text-[10px] tracking-[0.25em] uppercase text-rust md:text-right" data-i18n="footer.tagline">
+            O arquivo vivo dos clássicos.
+          </p>
+        </div>
+
+        <!-- AVISO LEGAL -->
+        <div class="legal-notice">
+          <div class="legal-notice-icon">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="m9 12 2 2 4-4" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
+          </div>
+          <div class="legal-notice-body">
+            <p class="legal-notice-title" data-i18n="legal.title">Sobre o conteúdo</p>
+            <p class="legal-notice-text" data-i18n="legal.text">
+              Todos os jogos exibidos na GAMECA são homebrews e produções independentes obtidos por
+              distribuição pública aberta no itch.io e em repositórios oficiais dos criadores.
+              A GAMECA não reivindica autoria, propriedade ou direitos sobre qualquer ROM. Cada jogo
+              mantém um link direto para a página original do desenvolvedor. Se você é o criador de
+              algum título listado e deseja remoção, correção de créditos ou atualização de links,
+              escreva para <a href="mailto:gameca.oficial@gmail.com">gameca.oficial@gmail.com</a> — atendemos em até 24h.
+            </p>
           </div>
         </div>
 
-        <!-- Ordenação -->
-        <div class="flex flex-col gap-1.5 flex-1 min-w-[140px] md:max-w-[220px]">
-          <label for="filter-sort"
-                 class="font-mono text-[9px] uppercase tracking-[0.25em] text-cream-dim pl-0.5">
-            Ordenar
-          </label>
-          <div class="relative">
-            <select id="filter-sort" class="filter-select">
-              <option value="az">A – Z</option>
-              <option value="za">Z – A</option>
-              <option value="featured">Destaques primeiro</option>
-              <option value="recent">Lançamentos recentes</option>
-            </select>
-            <svg class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-cream-muted" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true">
-              <path d="m6 9 6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </div>
-        </div>
-
-        <!-- Contador + Limpar -->
-        <div class="flex items-center gap-3 ml-auto pt-1">
-          <span id="filter-count"
-                class="font-mono text-[10px] uppercase tracking-widest text-cream-muted whitespace-nowrap">
-          </span>
-          <button id="filter-clear"
-                  class="hidden font-mono text-[10px] uppercase tracking-widest text-rust hover:text-rust-light
-                         underline underline-offset-4 transition whitespace-nowrap">
-            Limpar
-          </button>
-        </div>
-
-      </div>
-    </div>
-
-    <!-- ============================================================
-         GRADE DE JOGOS (populada pelo app.js)
-    ============================================================ -->
-    <div id="grid-container"
-         class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6
-                gap-3 md:gap-4 px-4 md:px-10">
-
-      <!-- Skeleton de carregamento -->
-      <div id="loading-rows" class="col-span-full space-y-4">
-        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 md:gap-4">
-          <div class="aspect-[3/4] bg-ink-700 rounded-sm animate-pulse"></div>
-          <div class="aspect-[3/4] bg-ink-700 rounded-sm animate-pulse"></div>
-          <div class="aspect-[3/4] bg-ink-700 rounded-sm animate-pulse"></div>
-          <div class="aspect-[3/4] bg-ink-700 rounded-sm animate-pulse"></div>
-          <div class="aspect-[3/4] bg-ink-700 rounded-sm animate-pulse"></div>
-          <div class="aspect-[3/4] bg-ink-700 rounded-sm animate-pulse"></div>
-          <div class="aspect-[3/4] bg-ink-700 rounded-sm animate-pulse"></div>
-          <div class="aspect-[3/4] bg-ink-700 rounded-sm animate-pulse"></div>
-          <div class="aspect-[3/4] bg-ink-700 rounded-sm animate-pulse"></div>
-          <div class="aspect-[3/4] bg-ink-700 rounded-sm animate-pulse"></div>
-          <div class="aspect-[3/4] bg-ink-700 rounded-sm animate-pulse"></div>
-          <div class="aspect-[3/4] bg-ink-700 rounded-sm animate-pulse"></div>
+        <div class="border-t border-ink-600 pt-6 grid md:grid-cols-2 gap-4 mt-8">
+          <p class="text-xs text-cream-muted leading-relaxed" data-i18n="footer.body">
+            Clássicos para hardware clássico.
+          </p>
+          <p class="font-mono text-[10px] tracking-[0.2em] uppercase text-cream-dim md:text-right">
+            © <span id="year"></span> GAMECA ·
+            <a href="/sobre" class="text-gold hover:text-gold-light transition" data-i18n="footer.about">Sobre</a> ·
+            <a href="/legal" class="text-gold hover:text-gold-light transition" data-i18n="footer.legal">Aviso Legal</a>
+          </p>
         </div>
       </div>
+    </footer>
 
-    </div>
+  </div><!-- /app-content -->
 
-    <!-- Estado vazio -->
-    <div id="empty-state" class="hidden text-center py-24 px-6">
-      <p class="font-display text-6xl text-ink-500 mb-4">∅</p>
-      <h3 class="font-display text-3xl text-cream mb-2 uppercase tracking-tight" data-i18n="empty.title">Nada por aqui</h3>
-      <p class="text-cream-muted text-sm" data-i18n="empty.text">Tente outra busca ou explore outra categoria.</p>
-    </div>
-
-    <!-- ANÚNCIO: rodapé -->
-    <div id="ad-slot-bottom" class="ad-slot ad-slot-horizontal mx-4 md:mx-10 mt-10 md:mt-14"></div>
-
-  </main>
-
-  <!-- ============================================================
-       FOOTER
-  ============================================================ -->
-  <footer class="border-t border-ink-600 bg-ink-900 px-4 md:px-10 py-14">
-    <div class="max-w-5xl mx-auto">
-      <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-8">
-        <img src="assets/logos/gameca-logo-03.svg"
-             alt="GAMECA"
-             class="h-24 md:h-28 w-auto"
-             onerror="this.style.display='none';" />
-        <p class="font-mono text-[10px] tracking-[0.25em] uppercase text-rust md:text-right" data-i18n="footer.tagline">
-          O arquivo vivo dos clássicos.
-        </p>
-      </div>
-      <div class="border-t border-ink-600 pt-6 grid md:grid-cols-2 gap-4">
-        <p class="text-xs text-cream-muted leading-relaxed" data-i18n="footer.body">
-          Clássicos para hardware clássico.
-        </p>
-        <p class="font-mono text-[10px] tracking-[0.2em] uppercase text-cream-dim md:text-right">
-          © <span id="year"></span> GAMECA ·
-          <a href="/sobre" class="text-gold hover:text-gold-light transition">Sobre</a> ·
-          <a href="/legal" class="text-gold hover:text-gold-light transition">Aviso Legal</a>
-        </p>
-      </div>
-    </div>
-  </footer>
-
-  <!-- ============================================================
-       MODAL DE DETALHES
-  ============================================================ -->
+  <!-- MODAL DE DETALHES -->
   <div id="detail-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-0 md:p-6"
        role="dialog" aria-modal="true" aria-labelledby="detail-title">
     <div id="detail-backdrop" class="absolute inset-0 bg-black/85 backdrop-blur-sm"></div>
@@ -437,9 +526,7 @@
     </div>
   </div>
 
-  <!-- ============================================================
-       EMULADOR
-  ============================================================ -->
+  <!-- EMULADOR -->
   <div id="emulator-overlay" class="fixed inset-0 z-[60] hidden bg-black flex-col" role="dialog" aria-modal="true" aria-label="Emulator">
     <div id="emulator-bar"
          class="absolute top-0 inset-x-0 z-30 flex items-center gap-3 px-3 md:px-5 h-12
@@ -508,9 +595,7 @@
 
   <div id="toast-container" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[80] flex flex-col gap-2 items-center pointer-events-none"></div>
 
-  <!-- ============================================================
-       TEMPLATES
-  ============================================================ -->
+  <!-- TEMPLATES -->
   <template id="tpl-card">
     <button class="card group relative w-full rounded-sm overflow-hidden
                    bg-ink-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-rust
@@ -532,7 +617,7 @@
 
   <template id="tpl-row">
     <section class="row group/row">
-      <div class="flex items-end justify-between px-4 md:px-10 mb-3 gap-3">
+      <div class="flex items-end justify-between px-4 md:px-8 mb-3 gap-3">
         <h2 class="row-title"></h2>
         <div class="hidden md:flex gap-1 opacity-0 group-hover/row:opacity-100 transition shrink-0">
           <button class="row-prev w-8 h-8 rounded-sm border border-ink-500 hover:border-cream hover:bg-ink-700 flex items-center justify-center text-cream transition" aria-label="Previous">‹</button>
@@ -550,11 +635,11 @@
     </div>
   </template>
 
-  <script src="data/jogos.js?v=7"></script>
-  <script src="data/i18n.js?v=7"></script>
-  <script src="js/storage.js?v=7"></script>
-  <script src="js/emulator.js?v=7"></script>
-  <script src="js/app.js?v=7"></script>
+  <script src="data/jogos.js?v=8"></script>
+  <script src="data/i18n.js?v=8"></script>
+  <script src="js/storage.js?v=8"></script>
+  <script src="js/emulator.js?v=8"></script>
+  <script src="js/app.js?v=8"></script>
   <script>
     document.getElementById('year').textContent = new Date().getFullYear();
     if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
