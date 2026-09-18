@@ -16,15 +16,16 @@ window.I18N = {
     'lang.label': 'Idioma',
     'offline': 'Offline',
 
+    'filter.all': 'Todos',
+    'count.game': 'jogo',
+    'count.games': 'jogos',
+
     'hero.badge': 'Em destaque',
     'hero.play': 'Jogar agora',
     'hero.info': 'Conheça o jogo',
 
     'row.continue': 'Continuar jogando',
     'row.results': 'Resultados para',
-    'row.platform': 'Clássicos do {name}',
-    'row.genre': 'Destaques em {name}',
-    'row.discover': 'Descubra novos clássicos',
     'row.favorites': 'Minha Lista',
 
     'empty.title': 'Nada por aqui',
@@ -42,10 +43,12 @@ window.I18N = {
     'detail.play': 'Jogar',
     'detail.favorite': 'Adicionar à biblioteca',
     'detail.no_description': 'Sem descrição disponível.',
+    'detail.support': 'Apoiar o criador',
+    'detail.disclaimer_before': 'Este jogo pertence ao seu criador. A GAMECA não reivindica autoria, propriedade ou direitos sobre a ROM. Se você é o autor e deseja remoção ou ajuste de créditos, escreva para',
+    'detail.disclaimer_after': '— removemos em até 24h.',
 
     'emulator.exit': 'Sair',
     'emulator.loading': 'Carregando emulador',
-    'emulator.loading_game': 'Carregando {name}…',
     'emulator.cancel': 'Cancelar',
     'emulator.error.title': 'Não foi possível iniciar',
     'emulator.error.back': 'Voltar ao catálogo',
@@ -56,8 +59,7 @@ window.I18N = {
     'toast.play_error': 'Não foi possível iniciar o jogo.',
 
     'footer.tagline': 'O arquivo vivo dos clássicos.',
-    'footer.body': 'Clássicos para hardware clássico, rodando no navegador via EmulatorJS. Todos os jogos são distribuídos com autorização dos criadores ou sob licença livre.',
-    'footer.rights': '© {year} GAMECA',
+    'footer.body': 'Clássicos para hardware clássico, rodando no navegador via EmulatorJS.',
 
     'ad.label': '· publicidade ·',
 
@@ -122,15 +124,16 @@ window.I18N = {
     'lang.label': 'Language',
     'offline': 'Offline',
 
+    'filter.all': 'All',
+    'count.game': 'game',
+    'count.games': 'games',
+
     'hero.badge': 'Featured',
     'hero.play': 'Play now',
     'hero.info': 'Meet the game',
 
     'row.continue': 'Continue playing',
     'row.results': 'Results for',
-    'row.platform': 'Classics for {name}',
-    'row.genre': 'Featured in {name}',
-    'row.discover': 'Discover new classics',
     'row.favorites': 'My List',
 
     'empty.title': 'Nothing here',
@@ -148,10 +151,12 @@ window.I18N = {
     'detail.play': 'Play',
     'detail.favorite': 'Add to library',
     'detail.no_description': 'No description available.',
+    'detail.support': 'Support the creator',
+    'detail.disclaimer_before': 'This game belongs to its creator. GAMECA claims no authorship, ownership, or rights over the ROM. If you are the author and want removal or credit adjustments, write to',
+    'detail.disclaimer_after': '— we remove within 24h.',
 
     'emulator.exit': 'Exit',
     'emulator.loading': 'Loading emulator',
-    'emulator.loading_game': 'Loading {name}…',
     'emulator.cancel': 'Cancel',
     'emulator.error.title': 'Could not start',
     'emulator.error.back': 'Back to catalog',
@@ -162,8 +167,7 @@ window.I18N = {
     'toast.play_error': 'Could not start the game.',
 
     'footer.tagline': 'Where classics live.',
-    'footer.body': 'Classics for classic hardware, running in the browser via EmulatorJS. All games are distributed with the creators\' permission or under a free license.',
-    'footer.rights': '© {year} GAMECA',
+    'footer.body': 'Classics for classic hardware, running in the browser via EmulatorJS.',
 
     'ad.label': '· advertisement ·',
 
@@ -228,15 +232,16 @@ window.I18N = {
     'lang.label': 'भाषा',
     'offline': 'ऑफ़लाइन',
 
+    'filter.all': 'सभी',
+    'count.game': 'खेल',
+    'count.games': 'खेल',
+
     'hero.badge': 'विशेष रूप से',
     'hero.play': 'अभी खेलें',
     'hero.info': 'गेम से मिलें',
 
     'row.continue': 'खेलना जारी रखें',
     'row.results': 'परिणाम',
-    'row.platform': '{name} के क्लासिक्स',
-    'row.genre': '{name} में विशेष',
-    'row.discover': 'नए क्लासिक्स खोजें',
     'row.favorites': 'मेरी सूची',
 
     'empty.title': 'यहाँ कुछ नहीं',
@@ -254,10 +259,12 @@ window.I18N = {
     'detail.play': 'खेलें',
     'detail.favorite': 'पुस्तकालय में जोड़ें',
     'detail.no_description': 'कोई विवरण उपलब्ध नहीं।',
+    'detail.support': 'रचनाकार का समर्थन करें',
+    'detail.disclaimer_before': 'यह गेम इसके रचनाकार का है। GAMECA ROM पर कोई अधिकार का दावा नहीं करता। यदि आप लेखक हैं और हटाना चाहते हैं, तो लिखें',
+    'detail.disclaimer_after': '— हम 24 घंटे में हटा देंगे।',
 
     'emulator.exit': 'बाहर',
     'emulator.loading': 'एमुलेटर लोड हो रहा है',
-    'emulator.loading_game': '{name} लोड हो रहा है…',
     'emulator.cancel': 'रद्द करें',
     'emulator.error.title': 'शुरू नहीं हो सका',
     'emulator.error.back': 'कैटलॉग पर वापस जाएँ',
@@ -268,8 +275,7 @@ window.I18N = {
     'toast.play_error': 'गेम शुरू नहीं हो सका।',
 
     'footer.tagline': 'जहाँ क्लासिक्स जीवित हैं।',
-    'footer.body': 'क्लासिक हार्डवेयर के लिए क्लासिक्स, EmulatorJS के माध्यम से ब्राउज़र में चल रहे हैं। सभी गेम रचनाकारों की अनुमति या मुफ़्त लाइसेंस के तहत वितरित किए जाते हैं।',
-    'footer.rights': '© {year} GAMECA',
+    'footer.body': 'क्लासिक हार्डवेयर के लिए क्लासिक्स, EmulatorJS के माध्यम से ब्राउज़र में चल रहे हैं।',
 
     'ad.label': '· विज्ञापन ·',
 
