@@ -7,10 +7,6 @@
 const { favorites, recents, prefs, events } = window.GRStorage;
 const { play, isPlaying } = window.GREmulator;
 
-/* ============================================================
-   ESTADO
-   ============================================================ */
-
 const state = {
   games:         [],
   byId:          new Map(),
@@ -349,15 +345,12 @@ function resetHeroTimer() {
 function populateFilters() {
   if (!dom.filterConsole || !dom.filterGenre) return;
 
-  // Consoles únicos
   const consoles = [...new Set(state.games.map(g => getPlataformaNome(g)).filter(Boolean))].sort();
 
-  // Gêneros únicos
   const genresSet = new Set();
   state.games.forEach(g => (g.genero || []).forEach(x => genresSet.add(x)));
   const genres = [...genresSet].sort();
 
-  // Preserva seleção
   const curConsole = state.filters.platform;
   const curGenre   = state.filters.genre;
 
@@ -374,23 +367,19 @@ function populateFilters() {
 function applyFilters() {
   let list = [...state.games];
 
-  // Favoritos
   if (state.filters.onlyFavorites) {
     const favSet = new Set(favorites.all());
     list = list.filter(g => favSet.has(g.id));
   }
 
-  // Console
   if (state.filters.platform) {
     list = list.filter(g => getPlataformaNome(g) === state.filters.platform);
   }
 
-  // Gênero
   if (state.filters.genre) {
     list = list.filter(g => (g.genero || []).includes(state.filters.genre));
   }
 
-  // Busca
   const q = normalize(state.searchTerm.trim());
   if (q) {
     list = list.filter(g => {
@@ -405,7 +394,6 @@ function applyFilters() {
     });
   }
 
-  // Ordenação
   const sort = state.filters.sort;
   list.sort((a, b) => {
     if (sort === 'az') return (a.titulo || '').localeCompare(b.titulo || '');
@@ -451,6 +439,7 @@ function clearFilters() {
 
   if (dom.filterConsole) dom.filterConsole.value = '';
   if (dom.filterGenre)   dom.filterGenre.value   = '';
+  if (dom.filterSort)    dom.filterSort.value    = 'az';
   if (dom.searchInput)   dom.searchInput.value   = '';
   if (dom.searchClear)   dom.searchClear.classList.add('hidden');
 
@@ -468,7 +457,6 @@ function renderGrid() {
   const grid = dom.gridContainer;
   if (!grid) return;
 
-  // Remove cards e anúncios antigos (mantém o #loading-rows)
   grid.querySelectorAll(':scope > .card, :scope > .ad-slot').forEach(el => el.remove());
 
   const games = state.filteredGames;
@@ -495,14 +483,12 @@ function renderGrid() {
   });
   grid.appendChild(frag);
 
-  // Aplica i18n aos cards recém-criados
   applyI18n();
-
   updateFilterCount();
 }
 
 /* ============================================================
-   CONTINUE DE ONDE PAROU
+   CONTINUE
    ============================================================ */
 
 function renderContinueRow() {
@@ -559,7 +545,6 @@ function openDetail(gameId) {
     dom.detailFicha.appendChild(node);
   });
 
-  // Rodapé dinâmico (créditos + apoiar criador)
   const criadorNome = getCriadorNome(game);
   const criadorSite = game.criador?.site || game.link_oficial || '';
 
@@ -655,7 +640,6 @@ function handleConnectivity() {
    ============================================================ */
 
 function bindEvents() {
-  /* Busca */
   let searchDebounce;
   dom.searchInput?.addEventListener('input', (e) => {
     clearTimeout(searchDebounce);
@@ -677,7 +661,6 @@ function bindEvents() {
     dom.searchInput.focus();
   });
 
-  /* Filtros */
   dom.filterConsole?.addEventListener('change', e => {
     state.filters.platform = e.target.value;
     applyFilters();
@@ -698,7 +681,7 @@ function bindEvents() {
 
   dom.filterClear?.addEventListener('click', clearFilters);
 
-  /* Nav */
+  /* Nav principal */
   dom.navLinks.forEach(btn => {
     btn.addEventListener('click', () => {
       const f = btn.dataset.filter;
@@ -707,18 +690,12 @@ function bindEvents() {
       state.filters.onlyFavorites = false;
       state.searchTerm            = '';
       if (dom.searchInput) dom.searchInput.value = '';
+      if (dom.searchClear) dom.searchClear.classList.add('hidden');
       if (dom.filterConsole) dom.filterConsole.value = '';
       if (dom.filterGenre)   dom.filterGenre.value   = '';
 
       if (f === 'favoritos') {
         state.filters.onlyFavorites = true;
-      } else if (f === 'console') {
-        // apenas reset, dropdown decide
-      } else if (f === 'todos') {
-        // já resetou
-      } else {
-        state.filters.genre = f;
-        if (dom.filterGenre) dom.filterGenre.value = f;
       }
 
       dom.navLinks.forEach(b => b.classList.toggle('active', b === btn));
@@ -730,19 +707,65 @@ function bindEvents() {
 
   dom.mobileCat?.addEventListener('change', e => {
     const f = e.target.value;
-    const fakeBtn = document.createElement('div');
-    fakeBtn.dataset.filter = f;
     const matching = dom.navLinks.find(b => b.dataset.filter === f);
     if (matching) matching.click();
   });
 
   dom.langSwitcher?.addEventListener('change', e => setLang(e.target.value));
 
-  /* Logo */
-  document.getElementById('logo-link')?.addEventListener('click', (e) => {
-    e.preventDefault();
-    clearFilters();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+  /* Sidebar */
+  $$('.sidebar-item').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const action = btn.dataset.action;
+
+      if (action === 'home') {
+        clearFilters();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        $$('.sidebar-item').forEach(b => b.classList.toggle('active', b === btn));
+        return;
+      }
+
+      if (action === 'explore') {
+        state.filters.platform      = '';
+        state.filters.genre         = '';
+        state.filters.onlyFavorites = false;
+        state.searchTerm            = '';
+        if (dom.searchInput) dom.searchInput.value = '';
+        dom.navLinks.forEach(b => b.classList.remove('active'));
+        applyFilters();
+        renderGrid();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        $$('.sidebar-item').forEach(b => b.classList.toggle('active', b === btn));
+        return;
+      }
+
+      if (action === 'library') {
+        state.filters.onlyFavorites = true;
+        state.filters.platform      = '';
+        state.filters.genre         = '';
+        state.searchTerm            = '';
+        if (dom.searchInput) dom.searchInput.value = '';
+        dom.navLinks.forEach(b => b.classList.toggle('active', b.dataset.filter === 'favoritos'));
+        applyFilters();
+        renderGrid();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        $$('.sidebar-item').forEach(b => b.classList.toggle('active', b === btn));
+        return;
+      }
+
+      if (action === 'updates') {
+        toast('Atualizações em breve.');
+        return;
+      }
+      if (action === 'messages') {
+        toast('Mensagens em breve.');
+        return;
+      }
+      if (action === 'settings') {
+        toast('Configurações em breve.');
+        return;
+      }
+    });
   });
 
   /* Modal */
