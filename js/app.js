@@ -1,15 +1,26 @@
 /**
  * app.js — GAMECA
+ * Home com grade + filtros (console, gênero, ordenação) + busca
  */
 
 ;(function(){
 const { favorites, recents, prefs, events } = window.GRStorage;
 const { play, isPlaying } = window.GREmulator;
 
+/* ============================================================
+   ESTADO
+   ============================================================ */
+
 const state = {
   games:         [],
   byId:          new Map(),
-  currentFilter: prefs.get('lastFilter', 'todos'),
+  filteredGames: [],
+  filters: {
+    platform:      '',
+    genre:         '',
+    sort:          'az',
+    onlyFavorites: false
+  },
   searchTerm:    '',
   heroIndex:     0,
   heroPool:      [],
@@ -109,8 +120,9 @@ function setLang(lang) {
   applyI18n();
   if (dom.langSwitcher) dom.langSwitcher.value = lang;
   if (state.games.length) {
+    populateFilters();
     renderHero();
-    buildHomeRows();
+    renderGrid();
     renderContinueRow();
   }
 }
@@ -139,8 +151,14 @@ function cacheDom() {
   dom.rowContinue       = $('#row-continue');
   dom.rowSearch         = $('#row-search');
   dom.searchTerm        = $('#search-term');
-  dom.rowsContainer     = $('#rows-container');
-  dom.adSlotMid         = $('#ad-slot-mid');
+
+  dom.filterConsole     = $('#filter-console');
+  dom.filterGenre       = $('#filter-genre');
+  dom.filterSort        = $('#filter-sort');
+  dom.filterCount       = $('#filter-count');
+  dom.filterClear       = $('#filter-clear');
+
+  dom.gridContainer     = $('#grid-container');
   dom.emptyState        = $('#empty-state');
   dom.loadingRows       = $('#loading-rows');
 
@@ -205,8 +223,12 @@ function playersLabel(n) {
   return t(key, { n: num });
 }
 
+function normalize(s) {
+  return String(s ?? '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+}
+
 /* ============================================================
-   CARD / ROW
+   CARD
    ============================================================ */
 
 function buildCard(game) {
@@ -243,22 +265,6 @@ function buildCard(game) {
   }
 
   node.addEventListener('click', () => openDetail(game.id));
-  return node;
-}
-
-function buildRow(title, games, rowKey) {
-  const node = dom.tplRow.content.firstElementChild.cloneNode(true);
-  node.dataset.rowKey = rowKey || slugify(title);
-  $('.row-title', node).textContent = title;
-
-  const track = $('.row-track', node);
-  games.forEach(g => track.appendChild(buildCard(g)));
-
-  const prev = $('.row-prev', node);
-  const next = $('.row-next', node);
-  if (prev) prev.addEventListener('click', () => track.scrollBy({ left: -track.clientWidth * 0.85, behavior: 'smooth' }));
-  if (next) next.addEventListener('click', () => track.scrollBy({ left:  track.clientWidth * 0.85, behavior: 'smooth' }));
-
   return node;
 }
 
@@ -337,67 +343,167 @@ function resetHeroTimer() {
 }
 
 /* ============================================================
-   FILEIRAS + SLOT DO MEIO
+   FILTROS
    ============================================================ */
 
-function posicionarAdSlotMid(posicao) {
-  const slot = dom.adSlotMid;
-  const container = dom.rowsContainer;
-  if (!slot || !container) return;
+function populateFilters() {
+  if (!dom.filterConsole || !dom.filterGenre) return;
 
-  const rows = Array.from(container.querySelectorAll(':scope > .row'));
-  if (rows.length < 2) { slot.hidden = true; return; }
+  // Consoles únicos
+  const consoles = [...new Set(state.games.map(g => getPlataformaNome(g)).filter(Boolean))].sort();
 
-  const idx = Math.min(posicao, rows.length - 1);
-  const referencia = rows[idx];
-  referencia.insertAdjacentElement('afterend', slot);
-  slot.hidden = false;
+  // Gêneros únicos
+  const genresSet = new Set();
+  state.games.forEach(g => (g.genero || []).forEach(x => genresSet.add(x)));
+  const genres = [...genresSet].sort();
+
+  // Preserva seleção
+  const curConsole = state.filters.platform;
+  const curGenre   = state.filters.genre;
+
+  dom.filterConsole.innerHTML = `<option value="">${t('filter.all')}</option>` +
+    consoles.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('');
+
+  dom.filterGenre.innerHTML = `<option value="">${t('filter.all')}</option>` +
+    genres.map(g => `<option value="${escapeHtml(g)}">${escapeHtml(tGenre(g))}</option>`).join('');
+
+  dom.filterConsole.value = curConsole;
+  dom.filterGenre.value   = curGenre;
 }
 
-function buildHomeRows() {
-  const container = dom.rowsContainer;
-  const slot = dom.adSlotMid;
+function applyFilters() {
+  let list = [...state.games];
 
-  if (slot && slot.parentElement !== container) container.appendChild(slot);
-  container.querySelectorAll(':scope > .row').forEach(r => r.remove());
+  // Favoritos
+  if (state.filters.onlyFavorites) {
+    const favSet = new Set(favorites.all());
+    list = list.filter(g => favSet.has(g.id));
+  }
 
-  const byPlataforma = new Map();
-  state.games.forEach(g => {
-    const key = getPlataformaNome(g) || 'Outros';
-    if (!byPlataforma.has(key)) byPlataforma.set(key, []);
-    byPlataforma.get(key).push(g);
-  });
+  // Console
+  if (state.filters.platform) {
+    list = list.filter(g => getPlataformaNome(g) === state.filters.platform);
+  }
 
-  const ordem = ['SNES', 'NES', 'Mega Drive', 'Master System', 'Game Boy', 'Game Boy Color', 'Atari 2600'];
-  const keys  = [...byPlataforma.keys()].sort((a, b) => {
-    const ia = ordem.indexOf(a); const ib = ordem.indexOf(b);
-    return (ia === -1 ? 99 : ia) - (ib === -1 ? 99 : ib);
-  });
+  // Gênero
+  if (state.filters.genre) {
+    list = list.filter(g => (g.genero || []).includes(state.filters.genre));
+  }
 
-  keys.forEach(k => {
-    const list = byPlataforma.get(k);
-    if (list.length) container.appendChild(buildRow(t('row.platform', { name: k }), list, `plataforma-${slugify(k)}`));
-  });
-
-  const byGenre = new Map();
-  state.games.forEach(g => {
-    (g.genero || []).forEach(gen => {
-      if (!byGenre.has(gen)) byGenre.set(gen, []);
-      byGenre.get(gen).push(g);
+  // Busca
+  const q = normalize(state.searchTerm.trim());
+  if (q) {
+    list = list.filter(g => {
+      const hay = [
+        g.titulo,
+        getPlataformaNome(g),
+        getCriadorNome(g),
+        ...(g.genero || []),
+        ...(g.tags || [])
+      ].map(normalize).join(' ');
+      return hay.includes(q);
     });
+  }
+
+  // Ordenação
+  const sort = state.filters.sort;
+  list.sort((a, b) => {
+    if (sort === 'az') return (a.titulo || '').localeCompare(b.titulo || '');
+    if (sort === 'za') return (b.titulo || '').localeCompare(a.titulo || '');
+    if (sort === 'featured') {
+      const fa = (a.is_featured || a.destaque) ? 1 : 0;
+      const fb = (b.is_featured || b.destaque) ? 1 : 0;
+      if (fa !== fb) return fb - fa;
+      return (a.titulo || '').localeCompare(b.titulo || '');
+    }
+    if (sort === 'recent') {
+      const ya = a.ano || 0;
+      const yb = b.ano || 0;
+      return yb - ya;
+    }
+    return 0;
   });
 
-  [...byGenre.entries()]
-    .filter(([, list]) => list.length >= 2)
-    .forEach(([gen, list]) => {
-      container.appendChild(buildRow(t('row.genre', { name: tGenre(gen) }), list, `genero-${slugify(gen)}`));
-    });
-
-  const shuffled = [...state.games].sort((a, b) => slugify(a.id).localeCompare(slugify(b.id)));
-  container.appendChild(buildRow(t('row.discover'), shuffled, 'descubra'));
-
-  posicionarAdSlotMid(2);
+  state.filteredGames = list;
 }
+
+function updateFilterCount() {
+  if (!dom.filterCount) return;
+  const total = state.games.length;
+  const shown = state.filteredGames.length;
+
+  if (shown === total) {
+    dom.filterCount.textContent = `${total} ${total === 1 ? t('count.game') : t('count.games')}`;
+  } else {
+    dom.filterCount.textContent = `${shown} / ${total}`;
+  }
+
+  const hasFilter = state.filters.platform || state.filters.genre ||
+                    state.filters.onlyFavorites || state.searchTerm;
+  dom.filterClear?.classList.toggle('hidden', !hasFilter);
+}
+
+function clearFilters() {
+  state.filters.platform      = '';
+  state.filters.genre         = '';
+  state.filters.onlyFavorites = false;
+  state.searchTerm            = '';
+
+  if (dom.filterConsole) dom.filterConsole.value = '';
+  if (dom.filterGenre)   dom.filterGenre.value   = '';
+  if (dom.searchInput)   dom.searchInput.value   = '';
+  if (dom.searchClear)   dom.searchClear.classList.add('hidden');
+
+  dom.navLinks.forEach(b => b.classList.toggle('active', b.dataset.filter === 'todos'));
+
+  applyFilters();
+  renderGrid();
+}
+
+/* ============================================================
+   GRADE
+   ============================================================ */
+
+function renderGrid() {
+  const grid = dom.gridContainer;
+  if (!grid) return;
+
+  // Remove cards e anúncios antigos (mantém o #loading-rows)
+  grid.querySelectorAll(':scope > .card, :scope > .ad-slot').forEach(el => el.remove());
+
+  const games = state.filteredGames;
+
+  if (!games.length) {
+    dom.emptyState?.classList.remove('hidden');
+    grid.classList.add('hidden');
+    updateFilterCount();
+    return;
+  }
+
+  dom.emptyState?.classList.add('hidden');
+  grid.classList.remove('hidden');
+
+  const frag = document.createDocumentFragment();
+  games.forEach((game, i) => {
+    frag.appendChild(buildCard(game));
+    if ((i + 1) % 12 === 0 && i < games.length - 1) {
+      const ad = document.createElement('div');
+      ad.className = 'col-span-full ad-slot ad-slot-horizontal my-2 md:my-4';
+      ad.setAttribute('aria-hidden', 'true');
+      frag.appendChild(ad);
+    }
+  });
+  grid.appendChild(frag);
+
+  // Aplica i18n aos cards recém-criados
+  applyI18n();
+
+  updateFilterCount();
+}
+
+/* ============================================================
+   CONTINUE DE ONDE PAROU
+   ============================================================ */
 
 function renderContinueRow() {
   const items = recents.top(12).map(r => state.byId.get(r.id)).filter(Boolean);
@@ -410,113 +516,6 @@ function renderContinueRow() {
 
   const title = $('.row-title', dom.rowContinue);
   if (title) title.textContent = t('row.continue');
-}
-
-/* ============================================================
-   BUSCA
-   ============================================================ */
-
-function renderSearchRow(results, term) {
-  if (dom.searchTerm) dom.searchTerm.textContent = `"${term}"`;
-
-  if (!results.length) {
-    dom.rowSearch.classList.add('hidden');
-    dom.emptyState.classList.remove('hidden');
-    return;
-  }
-  dom.emptyState.classList.add('hidden');
-  dom.rowSearch.classList.remove('hidden');
-  const track = $('.row-track', dom.rowSearch);
-  track.innerHTML = '';
-  results.forEach(g => track.appendChild(buildCard(g)));
-}
-
-function normalize(s) {
-  return String(s ?? '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-}
-
-function doSearch(term) {
-  const q = normalize(term.trim());
-  state.searchTerm = term;
-  if (dom.searchClear) dom.searchClear.classList.toggle('hidden', !term);
-
-  if (!q) {
-    dom.rowSearch.classList.add('hidden');
-    dom.emptyState.classList.add('hidden');
-    dom.rowsContainer.classList.remove('hidden');
-    dom.rowContinue.classList.toggle('hidden', recents.top(1).length === 0);
-    return;
-  }
-
-  const results = state.games.filter(g => {
-    const haystack = [
-      g.titulo,
-      getPlataformaNome(g),
-      getCriadorNome(g),
-      ...(g.genero || []),
-      ...(g.tags || [])
-    ].map(normalize).join(' ');
-    return haystack.includes(q);
-  });
-
-  renderSearchRow(results, term);
-  dom.rowsContainer.classList.add('hidden');
-  dom.rowContinue.classList.add('hidden');
-}
-
-/* ============================================================
-   FILTROS
-   ============================================================ */
-
-function applyFilter(filter) {
-  state.currentFilter = filter;
-  prefs.set('lastFilter', filter);
-
-  dom.navLinks.forEach(btn => btn.classList.toggle('active', btn.dataset.filter === filter));
-  if (dom.mobileCat) dom.mobileCat.value = filter;
-
-  if (dom.searchInput.value) { dom.searchInput.value = ''; doSearch(''); }
-
-  if (filter === 'todos') {
-    dom.rowsContainer.classList.remove('hidden');
-    dom.rowContinue.classList.toggle('hidden', recents.top(1).length === 0);
-    return;
-  }
-
-  dom.rowContinue.classList.add('hidden');
-  dom.rowsContainer.querySelectorAll(':scope > .row').forEach(r => r.remove());
-  if (dom.adSlotMid) dom.adSlotMid.hidden = true;
-
-  if (filter === 'favoritos') {
-    const list = favorites.all().map(id => state.byId.get(id)).filter(Boolean);
-    if (!list.length) { dom.emptyState.classList.remove('hidden'); return; }
-    dom.emptyState.classList.add('hidden');
-    dom.rowsContainer.classList.remove('hidden');
-    dom.rowsContainer.appendChild(buildRow(t('row.favorites'), list, 'favoritos'));
-    return;
-  }
-
-  if (filter === 'console') {
-    const byPlataforma = new Map();
-    state.games.forEach(g => {
-      const k = getPlataformaNome(g) || 'Outros';
-      if (!byPlataforma.has(k)) byPlataforma.set(k, []);
-      byPlataforma.get(k).push(g);
-    });
-    dom.emptyState.classList.add('hidden');
-    dom.rowsContainer.classList.remove('hidden');
-    [...byPlataforma.entries()].forEach(([k, list]) => {
-      dom.rowsContainer.appendChild(buildRow(k, list, `plataforma-${slugify(k)}`));
-    });
-    posicionarAdSlotMid(2);
-    return;
-  }
-
-  const list = state.games.filter(g => (g.genero || []).includes(filter));
-  if (!list.length) { dom.emptyState.classList.remove('hidden'); return; }
-  dom.emptyState.classList.add('hidden');
-  dom.rowsContainer.classList.remove('hidden');
-  dom.rowsContainer.appendChild(buildRow(tGenre(filter), list, `genero-${slugify(filter)}`));
 }
 
 /* ============================================================
@@ -559,6 +558,41 @@ function openDetail(gameId) {
     $('dd', node).textContent = String(v);
     dom.detailFicha.appendChild(node);
   });
+
+  // Rodapé dinâmico (créditos + apoiar criador)
+  const criadorNome = getCriadorNome(game);
+  const criadorSite = game.criador?.site || game.link_oficial || '';
+
+  dom.detailBox.querySelector('.detail-footer-dynamic')?.remove();
+
+  const wrap = document.createElement('div');
+  wrap.className = 'detail-footer-dynamic px-5 md:px-10 pb-10';
+  wrap.innerHTML = `
+    <div class="mt-8 pt-6 border-t border-ink-600 space-y-4">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div class="min-w-0">
+          <p class="font-mono text-[10px] uppercase tracking-[0.25em] text-cream-dim mb-1">${escapeHtml(t('detail.developer'))}</p>
+          <p class="text-sm text-cream font-semibold truncate">${escapeHtml(criadorNome || '—')}</p>
+        </div>
+        ${criadorSite ? `
+          <a href="${escapeHtml(criadorSite)}" target="_blank" rel="noopener noreferrer"
+             class="inline-flex items-center gap-2 bg-gold text-ink-900 font-bold text-xs uppercase tracking-wider
+                    px-4 py-2 rounded-sm hover:bg-gold-light transition active:scale-[0.98] shrink-0">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M7 17 17 7M7 7h10v10" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            ${escapeHtml(t('detail.support'))}
+          </a>
+        ` : ''}
+      </div>
+      <p class="text-[11px] text-cream-muted leading-relaxed">
+        ${escapeHtml(t('detail.disclaimer_before'))}
+        <a href="mailto:gameca.oficial@gmail.com" class="text-gold hover:text-gold-light underline underline-offset-2">gameca.oficial@gmail.com</a>
+        ${escapeHtml(t('detail.disclaimer_after'))}
+      </p>
+    </div>
+  `;
+  dom.detailBox.appendChild(wrap);
 
   updateFavButton(game.id);
 
@@ -621,42 +655,111 @@ function handleConnectivity() {
    ============================================================ */
 
 function bindEvents() {
+  /* Busca */
   let searchDebounce;
-  dom.searchInput.addEventListener('input', (e) => {
+  dom.searchInput?.addEventListener('input', (e) => {
     clearTimeout(searchDebounce);
     const v = e.target.value;
-    searchDebounce = setTimeout(() => doSearch(v), 130);
+    dom.searchClear?.classList.toggle('hidden', !v);
+    searchDebounce = setTimeout(() => {
+      state.searchTerm = v;
+      applyFilters();
+      renderGrid();
+    }, 200);
   });
 
-  dom.searchClear.addEventListener('click', () => {
+  dom.searchClear?.addEventListener('click', () => {
     dom.searchInput.value = '';
-    doSearch('');
+    dom.searchClear.classList.add('hidden');
+    state.searchTerm = '';
+    applyFilters();
+    renderGrid();
     dom.searchInput.focus();
   });
 
-  dom.navLinks.forEach(btn => btn.addEventListener('click', () => applyFilter(btn.dataset.filter)));
-  dom.mobileCat?.addEventListener('change', e => applyFilter(e.target.value));
+  /* Filtros */
+  dom.filterConsole?.addEventListener('change', e => {
+    state.filters.platform = e.target.value;
+    applyFilters();
+    renderGrid();
+  });
+
+  dom.filterGenre?.addEventListener('change', e => {
+    state.filters.genre = e.target.value;
+    applyFilters();
+    renderGrid();
+  });
+
+  dom.filterSort?.addEventListener('change', e => {
+    state.filters.sort = e.target.value;
+    applyFilters();
+    renderGrid();
+  });
+
+  dom.filterClear?.addEventListener('click', clearFilters);
+
+  /* Nav */
+  dom.navLinks.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const f = btn.dataset.filter;
+      state.filters.platform      = '';
+      state.filters.genre         = '';
+      state.filters.onlyFavorites = false;
+      state.searchTerm            = '';
+      if (dom.searchInput) dom.searchInput.value = '';
+      if (dom.filterConsole) dom.filterConsole.value = '';
+      if (dom.filterGenre)   dom.filterGenre.value   = '';
+
+      if (f === 'favoritos') {
+        state.filters.onlyFavorites = true;
+      } else if (f === 'console') {
+        // apenas reset, dropdown decide
+      } else if (f === 'todos') {
+        // já resetou
+      } else {
+        state.filters.genre = f;
+        if (dom.filterGenre) dom.filterGenre.value = f;
+      }
+
+      dom.navLinks.forEach(b => b.classList.toggle('active', b === btn));
+
+      applyFilters();
+      renderGrid();
+    });
+  });
+
+  dom.mobileCat?.addEventListener('change', e => {
+    const f = e.target.value;
+    const fakeBtn = document.createElement('div');
+    fakeBtn.dataset.filter = f;
+    const matching = dom.navLinks.find(b => b.dataset.filter === f);
+    if (matching) matching.click();
+  });
+
   dom.langSwitcher?.addEventListener('change', e => setLang(e.target.value));
 
+  /* Logo */
   document.getElementById('logo-link')?.addEventListener('click', (e) => {
     e.preventDefault();
-    applyFilter('todos');
+    clearFilters();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   });
 
-  dom.detailClose.addEventListener('click', closeDetail);
-  dom.detailBackdrop.addEventListener('click', closeDetail);
+  /* Modal */
+  dom.detailClose?.addEventListener('click', closeDetail);
+  dom.detailBackdrop?.addEventListener('click', closeDetail);
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && !dom.detailModal.classList.contains('hidden')) closeDetail();
   });
 
-  dom.detailFav.addEventListener('click', () => {
+  dom.detailFav?.addEventListener('click', () => {
     if (!state.currentGame) return;
     const isFav = favorites.toggle(state.currentGame.id);
     updateFavButton(state.currentGame.id);
     toast(isFav ? t('toast.added') : t('toast.removed'));
   });
 
+  /* Reações */
   events.on('favorites:changed', () => {
     $$('.card').forEach(card => {
       const id = card.dataset.gameId;
@@ -664,7 +767,10 @@ function bindEvents() {
       if (!star) return;
       star.style.opacity = favorites.has(id) ? '1' : '';
     });
-    if (state.currentFilter === 'favoritos') applyFilter('favoritos');
+    if (state.filters.onlyFavorites) {
+      applyFilters();
+      renderGrid();
+    }
   });
 
   events.on('recents:changed', () => renderContinueRow());
@@ -705,24 +811,25 @@ function init() {
     return;
   }
 
-  if (dom.loadingRows) dom.loadingRows.classList.add('hidden');
+  dom.loadingRows?.remove();
   if (dom.langSwitcher) dom.langSwitcher.value = state.lang;
 
   applyI18n();
+  populateFilters();
 
   pickHeroPool();
   renderHero();
   resetHeroTimer();
-  buildHomeRows();
-  renderContinueRow();
 
-  if (state.currentFilter && state.currentFilter !== 'todos') applyFilter(state.currentFilter);
+  applyFilters();
+  renderGrid();
+  renderContinueRow();
 
   bindEvents();
   handleScroll();
   handleConnectivity();
 
-  console.info('[app] rodando com app.js atualizado. tGenre:', typeof tGenre);
+  console.info('[app] rodando. Total:', state.games.length);
 }
 
 if (document.readyState === 'loading') {
