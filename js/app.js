@@ -639,4 +639,175 @@ function bindEvents() {
 
   dom.filterClear?.addEventListener('click', clearFilters);
 
-  dom.navLinks.forEach(btn =>
+  dom.navLinks.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const f = btn.dataset.filter;
+      state.filters.platform      = '';
+      state.filters.genre         = '';
+      state.filters.onlyFavorites = false;
+      state.searchTerm            = '';
+      if (dom.searchInput) dom.searchInput.value = '';
+      if (dom.searchClear) dom.searchClear.classList.add('hidden');
+      if (dom.filterConsole) dom.filterConsole.value = '';
+      if (dom.filterGenre)   dom.filterGenre.value   = '';
+
+      if (f === 'favoritos') {
+        state.filters.onlyFavorites = true;
+      }
+
+      dom.navLinks.forEach(b => b.classList.toggle('active', b === btn));
+
+      applyFilters();
+      renderGrid();
+    });
+  });
+
+  dom.mobileCat?.addEventListener('change', e => {
+    const f = e.target.value;
+    const matching = dom.navLinks.find(b => b.dataset.filter === f);
+    if (matching) matching.click();
+  });
+
+  dom.langSwitcher?.addEventListener('change', e => setLang(e.target.value));
+
+  $$('.sidebar-item').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const action = btn.dataset.action;
+
+      if (action === 'home') {
+        clearFilters();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        $$('.sidebar-item').forEach(b => b.classList.toggle('active', b === btn));
+        return;
+      }
+
+      if (action === 'explore') {
+        state.filters.platform      = '';
+        state.filters.genre         = '';
+        state.filters.onlyFavorites = false;
+        state.searchTerm            = '';
+        if (dom.searchInput) dom.searchInput.value = '';
+        dom.navLinks.forEach(b => b.classList.remove('active'));
+        applyFilters();
+        renderGrid();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        $$('.sidebar-item').forEach(b => b.classList.toggle('active', b === btn));
+        return;
+      }
+
+      if (action === 'library') {
+        state.filters.onlyFavorites = true;
+        state.filters.platform      = '';
+        state.filters.genre         = '';
+        state.searchTerm            = '';
+        if (dom.searchInput) dom.searchInput.value = '';
+        dom.navLinks.forEach(b => b.classList.toggle('active', b.dataset.filter === 'favoritos'));
+        applyFilters();
+        renderGrid();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        $$('.sidebar-item').forEach(b => b.classList.toggle('active', b === btn));
+        return;
+      }
+
+      if (action === 'updates') {
+        toast('Atualizações em breve.');
+        return;
+      }
+      if (action === 'messages') {
+        toast('Mensagens em breve.');
+        return;
+      }
+      if (action === 'settings') {
+        toast('Configurações em breve.');
+        return;
+      }
+    });
+  });
+
+  dom.detailClose?.addEventListener('click', closeDetail);
+  dom.detailBackdrop?.addEventListener('click', closeDetail);
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !dom.detailModal.classList.contains('hidden')) closeDetail();
+  });
+
+  dom.detailFav?.addEventListener('click', () => {
+    if (!state.currentGame) return;
+    const isFav = favorites.toggle(state.currentGame.id);
+    updateFavButton(state.currentGame.id);
+    toast(isFav ? t('toast.added') : t('toast.removed'));
+  });
+
+  events.on('favorites:changed', () => {
+    $$('.card').forEach(card => {
+      const id = card.dataset.gameId;
+      const star = card.querySelector('.card-fav');
+      if (!star) return;
+      star.style.opacity = favorites.has(id) ? '1' : '';
+    });
+    if (state.filters.onlyFavorites) {
+      applyFilters();
+      renderGrid();
+    }
+  });
+
+  events.on('recents:changed', () => renderContinueRow());
+  events.on('emulator:stopped', () => renderContinueRow());
+
+  window.addEventListener('scroll', handleScroll, { passive: true });
+  window.addEventListener('online',  handleConnectivity);
+  window.addEventListener('offline', handleConnectivity);
+}
+
+function loadGames() {
+  const data = window.JOGOS;
+  if (!Array.isArray(data)) throw new Error('window.JOGOS não encontrado.');
+  return data.filter(g => g.is_published !== false);
+}
+
+function init() {
+  cacheDom();
+  state.lang = detectLang();
+
+  let games;
+  try {
+    games = loadGames();
+    state.games = games;
+    state.byId  = new Map(games.map(g => [g.id, g]));
+  } catch (e) {
+    console.error('[app] falha no catálogo:', e);
+    if (dom.loadingRows) {
+      dom.loadingRows.innerHTML =
+        `<p class="text-center text-cream-muted py-10 px-6 font-mono text-xs uppercase tracking-widest">
+          Não foi possível carregar o catálogo.<br><span class="text-rust">${escapeHtml(e.message)}</span>
+        </p>`;
+    }
+    return;
+  }
+
+  dom.loadingRows?.remove();
+  if (dom.langSwitcher) dom.langSwitcher.value = state.lang;
+
+  applyI18n();
+  populateFilters();
+
+  pickHeroPool();
+  renderHero();
+  resetHeroTimer();
+
+  applyFilters();
+  renderGrid();
+  renderContinueRow();
+
+  bindEvents();
+  handleScroll();
+  handleConnectivity();
+
+  console.info('[app] rodando. Total:', state.games.length);
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', init);
+} else {
+  init();
+}
+})();
