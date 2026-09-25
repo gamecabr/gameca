@@ -1,0 +1,100 @@
+#itch-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  background: #000;
+  flex-direction: column;
+}
+
+#itch-bar {
+  position: absolute;
+  top: 0;
+  inset-inline: 0;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 20px;
+  height: 48px;
+  background: linear-gradient(to bottom, rgba(0,0,0,.95), transparent);
+}
+
+#itch-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #F2EDE4;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#itch-stage {
+  position: relative;
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.itch-player-wrapper {
+  position: absolute;
+  inset: 0;
+  background: #000;
+  overflow: hidden;
+}
+
+.itch-player-wrapper iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+
+.itch-player-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(160deg, #1A1715, #0F0D0B);
+}
+
+.itch-fallback-inner {
+  text-align: center;
+  padding: 24px;
+}
+
+.itch-fallback-text {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: #8A8375;
+  margin: 0 0 16px;
+}
+
+.itch-fallback-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #DFA05D;
+  color: #0F0D0B;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-weight: 700;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 10px 20px;
+  border-radius: 2px;
+  text-decoration: none;
+  transition: background .15s;
+}
+
+.itch-fallback-btn:hover {
+  background: #E8B77A;
+}
