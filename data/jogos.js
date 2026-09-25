@@ -625,5 +625,37 @@ window.JOGOS = [
     "external_link": "",
     "is_published": true,
     "is_featured": false
-  }
+  },
+  {
+  "id": "digable-planetoids-pico8",
+  "slug": "digable-planetoids",
+  "titulo": "Digable Planetoids",
+  "plataforma": { "slug": "pico-8", "nome": "PICO-8", "fabricante": "Lexaloffle", "ano_lancamento": 2015 },
+  "criador": { "slug": "zep", "nome": "zep", "bio": "Criador do PICO-8 e desenvolvedor independente.", "site": "https://zep.itch.io" },
+  "core": "pico8",
+  "ano": 2026,
+  "genero": ["Ação", "Puzzle"],
+  "jogadores": 1,
+  "rom": "",
+  "capa": "assets/capas/digable-planetoids-pico8.jpg",
+  "hero": "",
+  "screenshots": [],
+  "resumo": "Cave planetoides, colete gemas e sobreviva em um PICO-8 de 1 KB.",
+  "resumo_i18n": {
+    "en": "Dig planetoids, collect gems and survive in a 1 KB PICO-8 game.",
+    "hi": "ग्रहों को खोदें, रत्न इकट्ठा करें और 1 KB PICO-8 गेम में जीवित रहें।"
+  },
+  "sinopse": "Digable Planetoids é um jogo de ação e mineração para PICO-8, feito para a PICO-1k 2026. Você controla um astronauta que cava planetoides em busca de gemas de poder, usando jetpack e explosivos para explorar cavernas cheias de areia movediça, lava e energia limitada. Não há estado de vitória — a glória é coletar o máximo de gemas antes de perecer.",
+  "sinopse_i18n": {
+    "en": "Digable Planetoids is an action and mining game for PICO-8, made for PICO-1k 2026. You control an astronaut digging through planetoids in search of power gems, using jetpack and explosives to explore caves filled with quicksand, lava and limited energy. There is no win state — the glory is collecting as many gems as possible before perishing.",
+    "hi": "डिगेबल प्लेनेटॉइड्स PICO-8 के लिए एक एक्शन और खनन गेम है, जो PICO-1k 2026 के लिए बनाया गया है।"
+  },
+  "tags": ["homebrew", "pico8", "acao", "puzzle"],
+  "link_oficial": "https://zep.itch.io/digable-planetoids",
+  "itch_url": "https://zep.itch.io/digable-planetoids",
+  "distribution_status": "PLAY_HERE",
+  "external_link": "",
+  "is_published": true,
+  "is_featured": false
+}
 ];
