@@ -1,6 +1,5 @@
 /**
  * app.js — GAMECA
- * Home com grade + filtros (console, gênero, ordenação) + busca
  */
 
 ;(function(){
@@ -29,10 +28,6 @@ const $  = (sel, root = document) => root.querySelector(sel);
 const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
 
 const dom = {};
-
-/* ============================================================
-   i18n
-   ============================================================ */
 
 function detectLang() {
   try {
@@ -123,10 +118,6 @@ function setLang(lang) {
   }
 }
 
-/* ============================================================
-   DOM
-   ============================================================ */
-
 function cacheDom() {
   dom.header            = $('#app-header');
   dom.searchInput       = $('#search-input');
@@ -178,10 +169,6 @@ function cacheDom() {
   dom.tplFicha          = $('#tpl-ficha');
 }
 
-/* ============================================================
-   HELPERS
-   ============================================================ */
-
 function slugify(s) {
   return String(s)
     .toLowerCase()
@@ -222,10 +209,6 @@ function playersLabel(n) {
 function normalize(s) {
   return String(s ?? '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 }
-
-/* ============================================================
-   CARD
-   ============================================================ */
 
 function buildCard(game) {
   const node = dom.tplCard.content.firstElementChild.cloneNode(true);
@@ -276,10 +259,6 @@ function toast(msg, ms = 2600) {
     setTimeout(() => el.remove(), 320);
   }, ms);
 }
-
-/* ============================================================
-   HERO
-   ============================================================ */
 
 function pickHeroPool() {
   const destaques = state.games.filter(g => g.is_featured || g.destaque);
@@ -337,10 +316,6 @@ function resetHeroTimer() {
     }, 9000);
   }
 }
-
-/* ============================================================
-   FILTROS
-   ============================================================ */
 
 function populateFilters() {
   if (!dom.filterConsole || !dom.filterGenre) return;
@@ -449,10 +424,6 @@ function clearFilters() {
   renderGrid();
 }
 
-/* ============================================================
-   GRADE
-   ============================================================ */
-
 function renderGrid() {
   const grid = dom.gridContainer;
   if (!grid) return;
@@ -487,10 +458,6 @@ function renderGrid() {
   updateFilterCount();
 }
 
-/* ============================================================
-   CONTINUE
-   ============================================================ */
-
 function renderContinueRow() {
   const items = recents.top(12).map(r => state.byId.get(r.id)).filter(Boolean);
   if (!items.length) { dom.rowContinue.classList.add('hidden'); return; }
@@ -503,10 +470,6 @@ function renderContinueRow() {
   const title = $('.row-title', dom.rowContinue);
   if (title) title.textContent = t('row.continue');
 }
-
-/* ============================================================
-   MODAL
-   ============================================================ */
 
 function openDetail(gameId) {
   const game = state.byId.get(gameId);
@@ -581,7 +544,14 @@ function openDetail(gameId) {
 
   updateFavButton(game.id);
 
-  dom.detailPlay.onclick = () => { closeDetail(); startGame(game.id); };
+  dom.detailPlay.onclick = () => {
+    closeDetail();
+    if (game.itch_url && window.GRItchPlayer) {
+      window.GRItchPlayer.open(game);
+    } else {
+      startGame(game.id);
+    }
+  };
 
   dom.detailModal.classList.remove('hidden');
   dom.detailModal.classList.add('flex');
@@ -605,10 +575,6 @@ function updateFavButton(gameId) {
     : '<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" stroke-linecap="round"/></svg>';
 }
 
-/* ============================================================
-   JOGAR
-   ============================================================ */
-
 async function startGame(gameId) {
   const game = state.byId.get(gameId);
   if (!game) return;
@@ -618,10 +584,6 @@ async function startGame(gameId) {
     toast(t('toast.play_error'));
   }
 }
-
-/* ============================================================
-   HEADER / CONEXÃO
-   ============================================================ */
 
 function handleScroll() {
   if (!dom.header) return;
@@ -634,10 +596,6 @@ function handleConnectivity() {
   badge.classList.toggle('hidden', navigator.onLine);
   badge.classList.toggle('flex',   !navigator.onLine);
 }
-
-/* ============================================================
-   EVENTOS
-   ============================================================ */
 
 function bindEvents() {
   let searchDebounce;
@@ -681,183 +639,4 @@ function bindEvents() {
 
   dom.filterClear?.addEventListener('click', clearFilters);
 
-  /* Nav principal */
-  dom.navLinks.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const f = btn.dataset.filter;
-      state.filters.platform      = '';
-      state.filters.genre         = '';
-      state.filters.onlyFavorites = false;
-      state.searchTerm            = '';
-      if (dom.searchInput) dom.searchInput.value = '';
-      if (dom.searchClear) dom.searchClear.classList.add('hidden');
-      if (dom.filterConsole) dom.filterConsole.value = '';
-      if (dom.filterGenre)   dom.filterGenre.value   = '';
-
-      if (f === 'favoritos') {
-        state.filters.onlyFavorites = true;
-      }
-
-      dom.navLinks.forEach(b => b.classList.toggle('active', b === btn));
-
-      applyFilters();
-      renderGrid();
-    });
-  });
-
-  dom.mobileCat?.addEventListener('change', e => {
-    const f = e.target.value;
-    const matching = dom.navLinks.find(b => b.dataset.filter === f);
-    if (matching) matching.click();
-  });
-
-  dom.langSwitcher?.addEventListener('change', e => setLang(e.target.value));
-
-  /* Sidebar */
-  $$('.sidebar-item').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const action = btn.dataset.action;
-
-      if (action === 'home') {
-        clearFilters();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        $$('.sidebar-item').forEach(b => b.classList.toggle('active', b === btn));
-        return;
-      }
-
-      if (action === 'explore') {
-        state.filters.platform      = '';
-        state.filters.genre         = '';
-        state.filters.onlyFavorites = false;
-        state.searchTerm            = '';
-        if (dom.searchInput) dom.searchInput.value = '';
-        dom.navLinks.forEach(b => b.classList.remove('active'));
-        applyFilters();
-        renderGrid();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        $$('.sidebar-item').forEach(b => b.classList.toggle('active', b === btn));
-        return;
-      }
-
-      if (action === 'library') {
-        state.filters.onlyFavorites = true;
-        state.filters.platform      = '';
-        state.filters.genre         = '';
-        state.searchTerm            = '';
-        if (dom.searchInput) dom.searchInput.value = '';
-        dom.navLinks.forEach(b => b.classList.toggle('active', b.dataset.filter === 'favoritos'));
-        applyFilters();
-        renderGrid();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        $$('.sidebar-item').forEach(b => b.classList.toggle('active', b === btn));
-        return;
-      }
-
-      if (action === 'updates') {
-        toast('Atualizações em breve.');
-        return;
-      }
-      if (action === 'messages') {
-        toast('Mensagens em breve.');
-        return;
-      }
-      if (action === 'settings') {
-        toast('Configurações em breve.');
-        return;
-      }
-    });
-  });
-
-  /* Modal */
-  dom.detailClose?.addEventListener('click', closeDetail);
-  dom.detailBackdrop?.addEventListener('click', closeDetail);
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && !dom.detailModal.classList.contains('hidden')) closeDetail();
-  });
-
-  dom.detailFav?.addEventListener('click', () => {
-    if (!state.currentGame) return;
-    const isFav = favorites.toggle(state.currentGame.id);
-    updateFavButton(state.currentGame.id);
-    toast(isFav ? t('toast.added') : t('toast.removed'));
-  });
-
-  /* Reações */
-  events.on('favorites:changed', () => {
-    $$('.card').forEach(card => {
-      const id = card.dataset.gameId;
-      const star = card.querySelector('.card-fav');
-      if (!star) return;
-      star.style.opacity = favorites.has(id) ? '1' : '';
-    });
-    if (state.filters.onlyFavorites) {
-      applyFilters();
-      renderGrid();
-    }
-  });
-
-  events.on('recents:changed', () => renderContinueRow());
-  events.on('emulator:stopped', () => renderContinueRow());
-
-  window.addEventListener('scroll', handleScroll, { passive: true });
-  window.addEventListener('online',  handleConnectivity);
-  window.addEventListener('offline', handleConnectivity);
-}
-
-/* ============================================================
-   BOOT
-   ============================================================ */
-
-function loadGames() {
-  const data = window.JOGOS;
-  if (!Array.isArray(data)) throw new Error('window.JOGOS não encontrado.');
-  return data.filter(g => g.is_published !== false);
-}
-
-function init() {
-  cacheDom();
-  state.lang = detectLang();
-
-  let games;
-  try {
-    games = loadGames();
-    state.games = games;
-    state.byId  = new Map(games.map(g => [g.id, g]));
-  } catch (e) {
-    console.error('[app] falha no catálogo:', e);
-    if (dom.loadingRows) {
-      dom.loadingRows.innerHTML =
-        `<p class="text-center text-cream-muted py-10 px-6 font-mono text-xs uppercase tracking-widest">
-          Não foi possível carregar o catálogo.<br><span class="text-rust">${escapeHtml(e.message)}</span>
-        </p>`;
-    }
-    return;
-  }
-
-  dom.loadingRows?.remove();
-  if (dom.langSwitcher) dom.langSwitcher.value = state.lang;
-
-  applyI18n();
-  populateFilters();
-
-  pickHeroPool();
-  renderHero();
-  resetHeroTimer();
-
-  applyFilters();
-  renderGrid();
-  renderContinueRow();
-
-  bindEvents();
-  handleScroll();
-  handleConnectivity();
-
-  console.info('[app] rodando. Total:', state.games.length);
-}
-
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', init);
-} else {
-  init();
-}
-})();
+  dom.navLinks.forEach(btn =>
